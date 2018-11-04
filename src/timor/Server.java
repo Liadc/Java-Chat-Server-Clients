@@ -5,14 +5,18 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 
-public class Server {
+public class Server implements Runnable{
     private static ArrayList<ConnectionThread> connections = new ArrayList<>();
+    private int port;
 
-    public static void main(String[] args){
+    Server(int port){
+        this.port = port;
+    }
+    public void startServer(){
         ServerSocket server = null;
 
         try {
-            server = new ServerSocket(2000);
+            server = new ServerSocket(port);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -20,7 +24,7 @@ public class Server {
         boolean keepGoing = true;
         while(keepGoing){
             try {
-                System.out.println("Waiting for connections on port: "+ "....");
+                System.out.println("Waiting for connections on port: "+port+ "....");
                 Socket connection = server.accept();
                 ConnectionThread ct = new ConnectionThread(connection);
 //                Thread t = new Thread(ct);
@@ -31,7 +35,7 @@ public class Server {
                 e.printStackTrace();
             }
         }
-    }//end of main
+    }//listening method
 
 
     synchronized static void Broadcast(String msg, long threadID){
@@ -74,5 +78,10 @@ public class Server {
             allUsers += ct.getId() + ", ";
         }
         return allUsers;
+    }
+
+    @Override
+    public void run() {
+        this.startServer();
     }
 }
