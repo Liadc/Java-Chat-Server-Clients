@@ -4,14 +4,11 @@ import javax.swing.*;
 
 public class ServerGUI extends JFrame {
 
-    private JPanel panel1;
-    private JButton startServerButton;
-    private JTextField textField1;
-    private JTextArea textArea1;
+
 
     ServerGUI(int port){
         super("Amazing Ex4 Chat App");
-        stopStartBtn = new JButton("Start Server");
+//        stopStartBtn = new JButton("Start Server");
 
     }
 
@@ -21,8 +18,11 @@ public class ServerGUI extends JFrame {
     }
 
     /******* Private ********/
-    private JButton stopStartBtn;
+    private JPanel panel1;
+    private JButton startServerButton;
     private JTextField portField;
+    private JLabel portLabel;
+    private JLabel chatTitle;
     private JTextArea chatArea;
     private Server server;
 
