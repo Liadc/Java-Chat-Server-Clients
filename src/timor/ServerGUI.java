@@ -6,11 +6,11 @@ public class ServerGUI {
 
 
 
-    ServerGUI(){
+    ServerGUI(){ //constructor.
         startServerButton.addActionListener(e -> { //lambda function
-            int portInteger = 1337;
+            int portInteger = 1337; //our default port
             try {
-                portInteger = Integer.parseInt(portField.getText().trim());
+                portInteger = Integer.parseInt(portField.getText().trim()); //parsing from text field into integer representing port number.
             } catch (Exception ex) {
                 eventsArea.append("Bad port! Starting server on default port: 1337\n");
             }
@@ -19,7 +19,7 @@ public class ServerGUI {
                 portInteger = 1337;
             }
             Thread serverThread = new Thread(new Server(portInteger));
-            serverThread.start(); //created new Thread and starting the server listener.
+            serverThread.start(); //created new Thread and starting the server listener there.
             eventsArea.append("Server started on new Thread, listening on port "+portInteger+"...");
         });
     }
@@ -33,7 +33,7 @@ public class ServerGUI {
         frame.setVisible(true); //showing the frame to the screen.
 
 
-        new ServerGUI(); //update: this port to port text area value
+        new ServerGUI(); //calls the constructor.
     }
 
     /******* Private ********/
