@@ -8,19 +8,28 @@ public class ServerGUI {
 
     ServerGUI(){
         startServerButton.addActionListener(e -> { //lambda function
-            int portInteger = 1337;
-            try {
-                portInteger = Integer.parseInt(portField.getText().trim());
-            } catch (Exception ex) {
-                eventsArea.append("Bad port! Starting server on default port: 1337\n");
+            Thread serverThread;
+            if (startServerButton.getText().equals("Start Server")) {
+                int portInteger = 1337;
+                try {
+                    portInteger = Integer.parseInt(portField.getText().trim());
+                } catch (Exception ex) {
+                    eventsArea.append("Bad port! Starting server on default port: 1337\n");
+                }
+                if(portInteger <1000 || portInteger>65553){
+                    eventsArea.append("Bad port! Must be between 1001-65553. \nStarting server on default port: 1337");
+                    portInteger = 1337;
+                }
+                server = new Server(portInteger);
+                serverThread = new Thread(server);
+                serverThread.start(); //created new Thread and starting the server listener.
+                eventsArea.append("Server started on new Thread, listening on port "+portInteger+"...");
+                startServerButton.setText("Stop Server");
+            } else {
+                System.out.println("out");
+                server.stoplistening();
+                startServerButton.setText("Start Server");
             }
-            if(portInteger <1000 || portInteger>65553){
-                eventsArea.append("Bad port! Must be between 1001-65553. \nStarting server on default port: 1337");
-                portInteger = 1337;
-            }
-            Thread serverThread = new Thread(new Server(portInteger));
-            serverThread.start(); //created new Thread and starting the server listener.
-            eventsArea.append("Server started on new Thread, listening on port "+portInteger+"...");
         });
     }
 

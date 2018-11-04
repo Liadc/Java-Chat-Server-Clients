@@ -8,6 +8,7 @@ import java.util.ArrayList;
 public class Server implements Runnable{
     private static ArrayList<ConnectionThread> connections = new ArrayList<>();
     private int port;
+    private boolean keepGoing = true;
 
     Server(int port){
         this.port = port;
@@ -21,7 +22,7 @@ public class Server implements Runnable{
             e.printStackTrace();
         }
 
-        boolean keepGoing = true;
+
         while(keepGoing){
             try {
                 System.out.println("Waiting for connections on port: "+port+ "....");
@@ -82,6 +83,11 @@ public class Server implements Runnable{
 
     @Override
     public void run() {
+        this.keepGoing = true;
         this.startServer();
+    }
+
+    public void stoplistening() {
+        this.keepGoing = false;
     }
 }
