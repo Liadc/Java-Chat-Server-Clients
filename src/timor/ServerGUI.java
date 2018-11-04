@@ -25,7 +25,6 @@ public class ServerGUI {
                 Thread serverThread = new Thread(new Server(portInteger));
                 serverThread.start(); //created new Thread and starting the server listener.
                 chatArea.append("");
-
             }
         });
     }
