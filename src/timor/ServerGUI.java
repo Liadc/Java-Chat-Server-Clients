@@ -23,7 +23,9 @@ public class ServerGUI {
                     portInteger = 1337;
                 }
                 Thread serverThread = new Thread(new Server(portInteger));
-                serverThread.start();
+                serverThread.start(); //created new Thread and starting the server listener.
+                chatArea.append("");
+
             }
         });
     }
@@ -47,6 +49,7 @@ public class ServerGUI {
     private JLabel portLabel;
     private JLabel chatTitle;
     private JTextArea chatArea;
+    private JTextArea textArea1;
     private Server server;
 
 
