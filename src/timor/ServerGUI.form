@@ -50,7 +50,7 @@
         </constraints>
         <properties/>
       </component>
-      <component id="5cb8c" class="javax.swing.JLabel">
+      <component id="5cb8c" class="javax.swing.JLabel" binding="eventsTitle">
         <constraints>
           <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
@@ -58,7 +58,7 @@
           <text value="Server Events:"/>
         </properties>
       </component>
-      <component id="6a0cb" class="javax.swing.JTextArea" binding="textArea1" default-binding="true">
+      <component id="6a0cb" class="javax.swing.JTextArea" binding="eventsArea">
         <constraints>
           <grid row="4" column="0" row-span="1" col-span="3" vsize-policy="6" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false">
             <preferred-size width="600" height="250"/>

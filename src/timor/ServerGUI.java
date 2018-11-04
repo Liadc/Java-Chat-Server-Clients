@@ -1,31 +1,26 @@
 package timor;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class ServerGUI {
 
 
 
     ServerGUI(){
-        startServerButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int portInteger = 1337;
-                try {
-                    portInteger = Integer.parseInt(portField.getText().trim());
-                } catch (Exception ex) {
-                    System.out.println("Bad port! Starting server on default port: 1337");
-                }
-                if(portInteger <1000 || portInteger>65553){
-                    System.out.println("Bad port! Must be between 1001-65553. \nStarting server on default port: 1337");
-                    portInteger = 1337;
-                }
-                Thread serverThread = new Thread(new Server(portInteger));
-                serverThread.start(); //created new Thread and starting the server listener.
-                chatArea.append("");
+        startServerButton.addActionListener(e -> { //lambda function
+            int portInteger = 1337;
+            try {
+                portInteger = Integer.parseInt(portField.getText().trim());
+            } catch (Exception ex) {
+                eventsArea.append("Bad port! Starting server on default port: 1337\n");
             }
+            if(portInteger <1000 || portInteger>65553){
+                eventsArea.append("Bad port! Must be between 1001-65553. \nStarting server on default port: 1337");
+                portInteger = 1337;
+            }
+            Thread serverThread = new Thread(new Server(portInteger));
+            serverThread.start(); //created new Thread and starting the server listener.
+            eventsArea.append("Server started on new Thread, listening on port "+portInteger+"...");
         });
     }
 
@@ -48,7 +43,8 @@ public class ServerGUI {
     private JLabel portLabel;
     private JLabel chatTitle;
     private JTextArea chatArea;
-    private JTextArea textArea1;
+    private JTextArea eventsArea;
+    private JLabel eventsTitle;
     private Server server;
 
 
