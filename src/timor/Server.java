@@ -29,7 +29,7 @@ public class Server implements Runnable{
         try {
             server = new ServerSocket(port);
         } catch (BindException bException){
-            serverGUI.addToEvents("Recently used port, try a different port!");
+            serverGUI.addToEvents("Recently used this port, try a different port!");
             stopServer();
         } catch (IOException e) {
             e.printStackTrace();
@@ -59,12 +59,13 @@ public class Server implements Runnable{
     synchronized static void Broadcast(String msg, long threadID){
 
         System.out.println("ThreadID " + threadID +" Broadcasted: " + msg);
-        for(ConnectionThread ct : connections){
+        //serverGUI.addToMsgs("ThreadID "+threadID+" broadcasted: "+msg); //update threadID to username.
+        for(ConnectionThread ct : connections){ //send to every client (to every connection thread).
            ct.Print("ThreadID " + threadID +" says: " + msg);
        }
     }
 
-    synchronized static void sendMsg(String msg, long threadID) {
+    synchronized static void sendMsg(String msg, long threadID) { //update: optimize this, changes needed
         String msgTo = msg.substring(0,msg.indexOf(':'));
         long msgToID = Long.parseLong(msgTo);
         System.out.println("msgTo now equals: "+ msgTo);

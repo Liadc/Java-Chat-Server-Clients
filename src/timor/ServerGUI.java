@@ -26,7 +26,6 @@ public class ServerGUI {
                 toggleStartStopBtn();
             }
             else {
-                server.stoplistening();
                 server.stopServer();
                 addToEvents("Server has shut down.");
             }
