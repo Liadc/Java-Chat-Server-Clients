@@ -15,7 +15,7 @@ public class ClientGUI {
                 ip = InetAddress.getByName(ipField.getText());
                 port = Integer.parseInt(portField.getText());
                 socket = new Socket(ip, port);
-                Client client = new Client(ip,port);
+                client = new Client(ip,port);
                 Thread clientThread = new Thread(client);
                 clientThread.start();
             } catch (UnknownHostException e1) {
@@ -33,6 +33,7 @@ public class ClientGUI {
     }
 
     private void sendMsg(String msg) {
+        client.sendMsg(msg);
 
 
     }
@@ -49,7 +50,7 @@ public class ClientGUI {
     }
 
 
-
+    private Client client;
     private int port;
     private Socket socket;
     private InetAddress ip;

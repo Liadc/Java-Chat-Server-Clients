@@ -29,4 +29,8 @@ public class Client implements Runnable {
             e.printStackTrace();
         }
     }
+
+    public void sendMsg(String msg) {
+        //create readers and writes.
+    }
 }
