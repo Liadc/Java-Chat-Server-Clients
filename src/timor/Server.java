@@ -7,10 +7,6 @@ import java.net.Socket;
 import java.util.ArrayList;
 
 public class Server implements Runnable{
-    private static ArrayList<ConnectionThread> connections = new ArrayList<>();
-    private int port;
-    private boolean keepGoing = true;
-    private static ServerGUI serverGUI; //a GUI (on another thread) so the server can update some UI elements.
 
     Server(int port){
         this.port = port;
@@ -113,4 +109,10 @@ public class Server implements Runnable{
         this.keepGoing = true;
         this.startServer();
     }
+
+
+    private static ArrayList<ConnectionThread> connections = new ArrayList<>();
+    private int port;
+    private boolean keepGoing = true;
+    private static ServerGUI serverGUI; //a GUI (on another thread) so the server can update some UI elements.
 }

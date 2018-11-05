@@ -44,7 +44,7 @@
       </component>
       <component id="49e06" class="javax.swing.JTextArea" binding="chatArea">
         <constraints>
-          <grid row="2" column="0" row-span="1" col-span="3" vsize-policy="6" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false">
+          <grid row="2" column="0" row-span="1" col-span="2" vsize-policy="6" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false">
             <preferred-size width="600" height="250"/>
           </grid>
         </constraints>
@@ -68,9 +68,17 @@
           <text value=""/>
         </properties>
       </component>
-      <component id="2616c" class="javax.swing.JList" binding="list1" default-binding="true">
+      <component id="f5980" class="javax.swing.JLabel" binding="onlineUsersLabel">
         <constraints>
-          <grid row="3" column="2" row-span="2" col-span="1" vsize-policy="6" hsize-policy="2" anchor="0" fill="3" indent="0" use-parent-layout="false">
+          <grid row="1" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="Online Users:"/>
+        </properties>
+      </component>
+      <component id="2616c" class="javax.swing.JList" binding="onlineUsers">
+        <constraints>
+          <grid row="2" column="2" row-span="3" col-span="1" vsize-policy="6" hsize-policy="2" anchor="0" fill="3" indent="0" use-parent-layout="false">
             <preferred-size width="150" height="50"/>
           </grid>
         </constraints>
