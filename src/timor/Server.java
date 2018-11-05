@@ -17,7 +17,7 @@ public class Server implements Runnable{
     } //constructor for Server. doesn't use GUI.
     // This is mainly used to complete the functions needed using CMD client<->server communication using TELNET without any GUI developed.
 
-    Server(int port, ServerGUI anyGUI){ //Providing a GUI so the server can update some UI elements.
+    Server(int port, ServerGUI anyGUI){ //Providing a GUI so the server can update some UI elements in another thread.
         this.port = port;
         this.serverGUI = anyGUI;
     }
@@ -28,7 +28,8 @@ public class Server implements Runnable{
         try {
             server = new ServerSocket(port);
         } catch (BindException bException){
-
+            serverGUI.addToEvents("Recently used port, try a different port.");
+            stopServer();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -39,7 +40,6 @@ public class Server implements Runnable{
                 serverGUI.addToEvents("Waiting for connections on port: "+this.port+ "....");
                 Socket connection = server.accept();
                 ConnectionThread ct = new ConnectionThread(connection);
-//                Thread t = new Thread(ct);
                 connections.add(ct);
                 ct.start();
 //                serverGUI.addToEvents("Server started on new Thread, listening on port " + this.port + "..."); //update: actual message has to be
