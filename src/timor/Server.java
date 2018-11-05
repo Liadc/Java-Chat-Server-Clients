@@ -24,7 +24,7 @@ public class Server implements Runnable{
 
         try {
             server = new ServerSocket(port);
-        } catch (BindException bException){
+        } catch (BindException bException){ //port is binded and already in use.
             serverGUI.addToEvents("Recently used this port, try a different port!");
             stopServer();
         } catch (IOException e) {
@@ -54,9 +54,9 @@ public class Server implements Runnable{
 
 
     synchronized static void Broadcast(String msg, long threadID){
-        String msgsent = "ThreadID " + threadID +" Broadcasted: " + msg;
-        serverGUI.addToMsgs(msgsent);
-        System.out.println(msgsent);
+        String msgSent = "ThreadID " + threadID +" Broadcasted: " + msg; //update threadID to username.
+        serverGUI.addToMsgs(msgSent);
+        System.out.println(msgSent);
         //serverGUI.addToMsgs("ThreadID "+threadID+" broadcasted: "+msg); //update threadID to username.
         for(ConnectionThread ct : connections){ //send to every client (to every connection thread).
            ct.Print("ThreadID " + threadID +" says: " + msg);
@@ -86,6 +86,12 @@ public class Server implements Runnable{
         }
     }
 
+    /**
+     * Going through all connection threads, and adding their names.
+     * This method will be called when "show online" button is pressed.
+     * @param threadID the threadID who called the function. (doesn't use it)
+     * @return String, contains all users.
+     */
     static String getUsersOnline(long threadID) {
         String allUsers = "";
 //        Iterator<ConnectionThread> it = connections.iterator();
@@ -110,9 +116,9 @@ public class Server implements Runnable{
         this.startServer();
     }
 
-
+    /******** Private *********/
     private static ArrayList<ConnectionThread> connections = new ArrayList<>();
     private int port;
     private boolean keepGoing = true;
-    private static ServerGUI serverGUI; //a GUI (on another thread) so the server can update some UI elements.
+    private static ServerGUI serverGUI; //a GUI (on another thread) so this server can update some UI elements.
 }

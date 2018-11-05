@@ -52,7 +52,7 @@ public class Client implements Runnable {
 
     public void shutdown() throws IOException {
         keepGoing = false;
-        socket.close();
+//        socket.close();
     }
 
     //Private Methods
