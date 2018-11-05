@@ -24,7 +24,7 @@ public class ClientGUI {
         }else{
                 try {
                     client.closeConnection();
-                } catch (IOException e1) {
+                } catch (Exception e1) { //update to correct exception
                     System.out.println("Exception thrown!!!");
                     e1.printStackTrace();
                 }

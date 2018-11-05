@@ -18,39 +18,46 @@ public class Client implements Runnable {
 
     @Override
     public void run() {
-        try {
+        try { //trying to connect
             socket = new Socket(this.ip, this.port);
+        } catch (IOException e) { //some error connecting, cannot even establish connection with socket.
+            clientGUI.addMsg("Cannot connect to server: "+e);
+            return;
+        }
+        try{ //trying to create i/o streams.
             this.reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             this.writer = new PrintWriter(socket.getOutputStream(), true);
-        } catch (IOException e) {
-            e.printStackTrace();
+        }catch (IOException e1){
+            clientGUI.addMsg("Cannot create input/output streams (reader/writer)");
+            return;
         }
-        Runnable chatViewer = () -> {
-            String line = null;
-            while (keepGoing) {
-                try {
-                    line = reader.readLine();
-                    if (line != null) {
-                        handleMsg(line);
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
+        //we can now listen to the server, on another thread (so we don't block this thread!).
+        //**** ListenFromServer-Thread-HERE!!!!
+        Runnable listeningToServer = () ->{
+            String line;
+            while (true){
+                try{
+                     line = reader.readLine();
+                     if(line!=null){
+                         clientGUI.addMsg(line);
+                     }
+                }catch (IOException ioException){ //This means the connection is now closed, probably by the server.
+                    clientGUI.addMsg("You are disconnected. Server closed the connection.");
+                    //update: maybe change some GUI buttons to non-clickable if this happens.
                 }
             }
         };
-        Thread chatThread = new Thread(chatViewer);
-        chatThread.start();
+        Thread listenServerThread = new Thread(listeningToServer);
+        listenServerThread.start();
 
     }
 
-    public void sendMsg(String msg) {
+    void sendMsg(String msg) {
         writer.println(msg);
     }
 
-    public void closeConnection() throws IOException {
-        keepGoing = false;
-        reader.close();
-
+    void closeConnection() { //update
+//        keepGoing = false;
     }
 
     //Private Methods
