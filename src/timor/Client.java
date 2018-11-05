@@ -57,7 +57,22 @@ public class Client implements Runnable {
     }
 
     void closeConnection() { //update
-//        keepGoing = false;
+        try{
+            if(writer != null){ writer.close(); }
+        }catch (Exception e){
+            clientGUI.addMsg("Error with closing current outputStream -> writer");
+        }
+        try {
+            if (reader != null) { reader.close(); }
+        }catch(Exception e){
+            clientGUI.addMsg("Error with closing current inputStream -> reader");
+        }
+        try{
+            if(socket != null){ socket.close(); }
+        }catch (Exception e){
+            clientGUI.addMsg("Error with closing socket!");
+        }
+
     }
 
     //Private Methods
