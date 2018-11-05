@@ -74,6 +74,7 @@ public class ServerGUI {
     private JTextArea chatArea;
     private JTextArea eventsArea;
     private JLabel eventsTitle;
+    private JList list1;
     private Server server;
 
 
