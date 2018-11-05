@@ -47,6 +47,13 @@ public class ServerGUI {
             this.startServerButton.setText("Start Server");
         }
     }
+    protected void toggleStartStopBtn(boolean stopped){
+        if(stopped){
+            this.startServerButton.setText("Start Server");
+        }else{
+            this.startServerButton.setText("Stop Server");
+        }
+    }
 
     public static void main(String[] args){
         JFrame frame = new JFrame("Amazing Ex4 Chat App"); //new frame for our GUI

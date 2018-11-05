@@ -23,17 +23,17 @@ public class Server implements Runnable{
     }
 
     public void startServer(){
+        this.keepGoing = true;
         ServerSocket server = null;
 
         try {
             server = new ServerSocket(port);
         } catch (BindException bException){
-            serverGUI.addToEvents("Recently used port, try a different port.");
+            serverGUI.addToEvents("Recently used port, try a different port!");
             stopServer();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        this.keepGoing = true;
       
         while(keepGoing){
             try {
@@ -100,7 +100,7 @@ public class Server implements Runnable{
 
      protected void stopServer(){
         connections = null; //Server is shutting down.
-        serverGUI.toggleStartStopBtn(); //update GUI start button.
+        serverGUI.toggleStartStopBtn(true); //update GUI start button text.
         this.keepGoing = false;
     }
 
@@ -108,9 +108,5 @@ public class Server implements Runnable{
     public void run() {
         this.keepGoing = true;
         this.startServer();
-    }
-
-    public void stoplistening() {
-        this.keepGoing = false;
     }
 }
