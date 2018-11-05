@@ -1,6 +1,7 @@
 package timor;
 
 import java.io.IOException;
+import java.net.BindException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -9,31 +10,47 @@ public class Server implements Runnable{
     private static ArrayList<ConnectionThread> connections = new ArrayList<>();
     private int port;
     private boolean keepGoing = true;
+    private ServerGUI serverGUI; //a GUI (on another thread) so the server can update some UI elements.
 
     Server(int port){
         this.port = port;
+    } //constructor for Server. doesn't use GUI.
+    // This is mainly used to complete the functions needed using CMD client<->server communication using TELNET without any GUI developed.
+
+    Server(int port, ServerGUI anyGUI){ //Providing a GUI so the server can update some UI elements.
+        this.port = port;
+        this.serverGUI = anyGUI;
     }
+
     public void startServer(){
         ServerSocket server = null;
 
         try {
             server = new ServerSocket(port);
+        } catch (BindException bException){
+
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
+        this.keepGoing = true;
+      
         while(keepGoing){
             try {
-                System.out.println("Waiting for connections on port: "+port+ "....");
+                serverGUI.addToEvents("Waiting for connections on port: "+this.port+ "....");
                 Socket connection = server.accept();
                 ConnectionThread ct = new ConnectionThread(connection);
 //                Thread t = new Thread(ct);
                 connections.add(ct);
                 ct.start();
+//                serverGUI.addToEvents("Server started on new Thread, listening on port " + this.port + "..."); //update: actual message has to be
+// something like "connection made with client, initiating new thread for the server, to keep listening..."
 
             } catch (IOException e) {
+                System.out.println("Error with IO");
                 e.printStackTrace();
+            } catch (NullPointerException nullPointerException){
+                serverGUI.addToEvents("Recently used port, try a different port.");
+                stopServer();
             }
         }
     }//listening method
@@ -79,6 +96,12 @@ public class Server implements Runnable{
             allUsers += ct.getId() + ", ";
         }
         return allUsers;
+    }
+
+     protected void stopServer(){
+        connections = null; //Server is shutting down.
+        serverGUI.toggleStartStopBtn(); //update GUI start button.
+        this.keepGoing = false;
     }
 
     @Override

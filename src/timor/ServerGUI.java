@@ -1,38 +1,51 @@
 package timor;
 
 import javax.swing.*;
+import java.net.BindException;
 
 public class ServerGUI {
 
 
 
-    ServerGUI(){
+    ServerGUI(){ //constructor.
         startServerButton.addActionListener(e -> { //lambda function
-            Thread serverThread;
             if (startServerButton.getText().equals("Start Server")) {
-                int portInteger = 1337;
+                int portInteger = 1337; //our default port
                 try {
-                    portInteger = Integer.parseInt(portField.getText().trim());
+                    portInteger = Integer.parseInt(portField.getText().trim()); //parsing from text field into integer representing port number.
                 } catch (Exception ex) {
-                    eventsArea.append("Bad port! Starting server on default port: 1337\n");
+                    addToEvents("Bad port! Starting server on default port: 1337");
                 }
-                if(portInteger <1000 || portInteger>65553){
-                    eventsArea.append("Bad port! Must be between 1001-65553. \nStarting server on default port: 1337");
+                if (portInteger < 1000 || portInteger > 65553) {
+                    addToEvents("Bad port! Must be between 1001-65553. \nStarting server on default port: 1337");
                     portInteger = 1337;
                 }
-                server = new Server(portInteger);
-                serverThread = new Thread(server);
-                serverThread.start(); //created new Thread and starting the server listener.
-                eventsArea.append("Server started on new Thread, listening on port "+portInteger+"...");
-                startServerButton.setText("Stop Server");
-            } else {
-                System.out.println("out");
-                server.stoplistening();
-                startServerButton.setText("Start Server");
+                this.server = new Server(portInteger,this); //just constructs an object Server with specific port. also sends this GUI to the server, so it can update some UI elements.
+                Thread serverThread = new Thread(this.server); //assign new thread with Server object (Server implements Runnable)
+                serverThread.start(); //created new Thread and starting the server listener there.
+                toggleStartStopBtn();
+            }
+            else {
+                server.stopServer();
+                addToEvents("Server has shut down.");
             }
         });
     }
 
+    public void addToEvents(String eventMsg){ //appending new event to according text area.
+        eventsArea.append(eventMsg+"\n");
+    }
+    public void addToMsgs(String chatMsg){//appending new chat message to according text area.
+        chatArea.append(chatMsg+"\n");
+    }
+
+    protected void toggleStartStopBtn(){
+        if (this.startServerButton.getText().equals("Start Server")) {
+            this.startServerButton.setText("Stop Server");
+        }else {
+            this.startServerButton.setText("Start Server");
+        }
+    }
 
     public static void main(String[] args){
         JFrame frame = new JFrame("Amazing Ex4 Chat App"); //new frame for our GUI
@@ -42,7 +55,7 @@ public class ServerGUI {
         frame.setVisible(true); //showing the frame to the screen.
 
 
-        new ServerGUI(); //update: this port to port text area value
+        new ServerGUI(); //calls the constructor.
     }
 
     /******* Private ********/
