@@ -57,7 +57,7 @@ public class ServerGUI {
     }
 
     public static void main(String[] args){
-        JFrame frame = new JFrame("Amazing Ex4 Chat App"); //new frame for our GUI
+        JFrame frame = new JFrame("Server - Amazing Ex4 Chat App"); //new frame for our GUI
         frame.setContentPane(new ServerGUI().panel1); //set the pane for the frame as our JPanel from our form.
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //the default close for the frame, just exit.
         frame.pack(); //causes the window to be sized to fit the preferred size and layouts of its sub-components.

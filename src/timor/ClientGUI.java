@@ -12,19 +12,20 @@ public class ClientGUI {
         connectButton.addActionListener(e -> {
             if (connectButton.getText().equals("Connect")){
             try {
-                    ip = InetAddress.getByName(ipField.getText());
+                ip = InetAddress.getByName(ipField.getText());
                 port = Integer.parseInt(portField.getText());
                 client = new Client(ip, port, this);
                 Thread clientThread = new Thread(client);
                 clientThread.start();
-            } catch (UnknownHostException e1) {
+                connectButton.setText("Disconnect");
+            } catch (UnknownHostException e1) { //update to meaningful error and change gui accordingly.
                 e1.printStackTrace();
             }
-            connectButton.setText("Disconnect");
         }else{
                 try {
-                    client.shutdown();
+                    client.closeConnection();
                 } catch (IOException e1) {
+                    System.out.println("Exception thrown!!!");
                     e1.printStackTrace();
                 }
                 connectButton.setText("Connect");
@@ -35,16 +36,13 @@ public class ClientGUI {
            sendMsg(msgField.getText());
         });
     }
-
-    private void sendMsg(String msg) {
-        client.sendMsg(msg);
-
-
+    public void addMsg(String msg) {
+        chatArea.append(msg + "\n");
     }
 
     public static void main(String[] args) {
 
-        JFrame frame = new JFrame("Amazing Ex4 Chat App"); //new frame for our GUI
+        JFrame frame = new JFrame("Client - Amazing Ex4 Chat App"); //new frame for our GUI
         frame.setContentPane(new ClientGUI().mainPanel); //set the pane for the frame as our JPanel from our form.
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //the default close for the frame, just exit.
         frame.pack(); //causes the window to be sized to fit the preferred size and layouts of its sub-components.
@@ -53,6 +51,11 @@ public class ClientGUI {
         new ClientGUI();
     }
 
+    /******* Private *********/
+
+    private void sendMsg(String msg) {
+        client.sendMsg(msg);
+    }
 
     private Client client;
     private int port;
@@ -70,7 +73,4 @@ public class ClientGUI {
     private JButton sendButton;
     private JList connectedUsers;
 
-    public void addMsg(String msg) {
-        chatArea.append(msg + "\n");
-    }
 }

@@ -55,7 +55,7 @@ public class Server implements Runnable{
 
     /**
      * This method will iterate through all online clients and send them an event(string) from the server.
-     * @param msg
+     * @param msg the event to send.
      */
     synchronized static void broadcastServEvents(String msg){
         System.out.println("event occured, broadcasting this event: "+msg);
@@ -64,7 +64,7 @@ public class Server implements Runnable{
         }
     }
 
-    synchronized static void Broadcast(String msg, long threadID){
+    synchronized static void broadcastMsgs(String msg, long threadID){
         String msgSent = "ThreadID " + threadID +" Broadcasted: " + msg; //update threadID to username.
         serverGUI.addToMsgs(msgSent);
         System.out.println(msgSent);
