@@ -39,7 +39,9 @@
       </component>
       <component id="afab4" class="javax.swing.JLabel" binding="portLabel">
         <constraints>
-          <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false">
+            <preferred-size width="25" height="16"/>
+          </grid>
         </constraints>
         <properties>
           <text value="Port:"/>
@@ -103,9 +105,7 @@
           </grid>
         </constraints>
         <properties>
-          <model>
-            <item value="testuser"/>
-          </model>
+          <model/>
         </properties>
       </component>
     </children>
