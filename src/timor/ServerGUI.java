@@ -1,7 +1,7 @@
 package timor;
 
 import javax.swing.*;
-import java.net.BindException;
+
 
 public class ServerGUI {
 
@@ -34,21 +34,21 @@ public class ServerGUI {
 
     }
 
-    public void addToEvents(String eventMsg){ //appending new event to according text area.
+    void addToEvents(String eventMsg){ //appending new event to according text area.
         eventsArea.append(eventMsg+"\n");
     }
-    public void addToMsgs(String chatMsg){//appending new chat message to according text area.
+    void addToMsgs(String chatMsg){//appending new chat message to according text area.
         chatArea.append(chatMsg+"\n");
     }
 
-    protected void toggleStartStopBtn(){
+    private void toggleStartStopBtn(){
         if (this.startServerButton.getText().equals("Start Server")) {
             this.startServerButton.setText("Stop Server");
         }else {
             this.startServerButton.setText("Start Server");
         }
     }
-    protected void toggleStartStopBtn(boolean stopped){
+    void toggleStartStopBtn(boolean stopped){
         if(stopped){
             this.startServerButton.setText("Start Server");
         }else{

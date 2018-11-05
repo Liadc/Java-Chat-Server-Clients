@@ -41,6 +41,7 @@ public class Server implements Runnable{
 //                serverGUI.addToEvents("Server started on new Thread, listening on port " + this.port + "..."); //update: actual message has to be
 // something like "connection made with client, initiating new thread for the server, to keep listening..."
                 serverGUI.addToEvents(ct.getName() + " has connected");
+                broadcastServEvents(ct.getName()+" has connected.");
 
             } catch (IOException e) {
                 System.out.println("Error with IO");
@@ -52,6 +53,16 @@ public class Server implements Runnable{
         }
     }//listening method
 
+    /**
+     * This method will iterate through all online clients and send them an event(string) from the server.
+     * @param msg
+     */
+    synchronized static void broadcastServEvents(String msg){
+        System.out.println("event occured, broadcasting this event: "+msg);
+        for(ConnectionThread ct : connections){ //send to every client (to every connection thread).
+            ct.Print("Server System says: " + msg);
+        }
+    }
 
     synchronized static void Broadcast(String msg, long threadID){
         String msgSent = "ThreadID " + threadID +" Broadcasted: " + msg; //update threadID to username.
