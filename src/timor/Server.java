@@ -58,8 +58,9 @@ public class Server implements Runnable{
 
 
     synchronized static void Broadcast(String msg, long threadID){
-
-        System.out.println("ThreadID " + threadID +" Broadcasted: " + msg);
+        String msgsent = "ThreadID " + threadID +" Broadcasted: " + msg;
+        serverGUI.addToMsgs(msgsent);
+        System.out.println(msgsent);
         //serverGUI.addToMsgs("ThreadID "+threadID+" broadcasted: "+msg); //update threadID to username.
         for(ConnectionThread ct : connections){ //send to every client (to every connection thread).
            ct.Print("ThreadID " + threadID +" says: " + msg);
