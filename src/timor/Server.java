@@ -10,7 +10,7 @@ public class Server implements Runnable{
     private static ArrayList<ConnectionThread> connections = new ArrayList<>();
     private int port;
     private boolean keepGoing = true;
-    private ServerGUI serverGUI; //a GUI (on another thread) so the server can update some UI elements.
+    private static ServerGUI serverGUI; //a GUI (on another thread) so the server can update some UI elements.
 
     Server(int port){
         this.port = port;
@@ -19,10 +19,10 @@ public class Server implements Runnable{
 
     Server(int port, ServerGUI anyGUI){ //Providing a GUI so the server can update some UI elements in another thread.
         this.port = port;
-        this.serverGUI = anyGUI;
+        serverGUI = anyGUI;
     }
 
-    public void startServer(){
+    private void startServer(){
         this.keepGoing = true;
         ServerSocket server = null;
 
@@ -44,6 +44,7 @@ public class Server implements Runnable{
                 ct.start();
 //                serverGUI.addToEvents("Server started on new Thread, listening on port " + this.port + "..."); //update: actual message has to be
 // something like "connection made with client, initiating new thread for the server, to keep listening..."
+                serverGUI.addToEvents(ct.getName() + " has connected");
 
             } catch (IOException e) {
                 System.out.println("Error with IO");
@@ -82,6 +83,7 @@ public class Server implements Runnable{
         for(ConnectionThread ct : connections){
             if(ct.getId() == threadID){
                 connections.remove(ct);
+                serverGUI.addToEvents(ct.getName() + " has disconnected");
                 break;
             }
         }
