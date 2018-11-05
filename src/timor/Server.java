@@ -19,10 +19,10 @@ public class Server implements Runnable{
 
     Server(int port, ServerGUI anyGUI){ //Providing a GUI so the server can update some UI elements in another thread.
         this.port = port;
-        this.serverGUI = anyGUI;
+        serverGUI = anyGUI;
     }
 
-    public void startServer(){
+    private void startServer(){
         this.keepGoing = true;
         ServerSocket server = null;
 
