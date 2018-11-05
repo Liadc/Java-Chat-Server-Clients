@@ -24,12 +24,14 @@ public class ServerGUI {
                 Thread serverThread = new Thread(this.server); //assign new thread with Server object (Server implements Runnable)
                 serverThread.start(); //created new Thread and starting the server listener there.
                 toggleStartStopBtn();
+
             }
             else {
                 server.stopServer();
                 addToEvents("Server has shut down.");
             }
         });
+
     }
 
     public void addToEvents(String eventMsg){ //appending new event to according text area.
@@ -74,7 +76,8 @@ public class ServerGUI {
     private JTextArea chatArea;
     private JTextArea eventsArea;
     private JLabel eventsTitle;
-    private JList list1;
+    private JList<ConnectionThread> onlineUsers;
+    private JLabel onlineUsersLabel;
     private Server server;
 
 
