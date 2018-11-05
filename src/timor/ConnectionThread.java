@@ -51,13 +51,13 @@ public class ConnectionThread extends Thread{
 
     private void HandleMsg(String str){
         if(str.startsWith("!")){ //to broadcast, start with !
-            Server.Broadcast(str.substring(1),getId());
+            Server.broadcastMsgs(str.substring(1),getId());
         }
-        else if(str.startsWith("@")){
+        else if(str.startsWith("@")){ //private message another client
             System.out.println("Sending request from thread to Server, im asking to privateMessage");
             Server.sendMsg(str.substring(1),getId());
         }
-        else if(str.matches("\\$")){
+        else if(str.matches("\\$")){//to get all users online, type $
             writer.println("All users connected: " + Server.getUsersOnline(getId()));
         }
     }
@@ -66,7 +66,7 @@ public class ConnectionThread extends Thread{
        writer.println(str);
     }
     public void shutdown(){
+       Server.removeConnection(this.getId());
        running = false;
-       Server.removeConnection(getId());
     }
 }

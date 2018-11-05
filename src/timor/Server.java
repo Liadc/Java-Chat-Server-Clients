@@ -24,7 +24,7 @@ public class Server implements Runnable{
 
         try {
             server = new ServerSocket(port);
-        } catch (BindException bException){
+        } catch (BindException bException){ //port is binded and already in use.
             serverGUI.addToEvents("Recently used this port, try a different port!");
             stopServer();
         } catch (IOException e) {
@@ -41,6 +41,7 @@ public class Server implements Runnable{
 //                serverGUI.addToEvents("Server started on new Thread, listening on port " + this.port + "..."); //update: actual message has to be
 // something like "connection made with client, initiating new thread for the server, to keep listening..."
                 serverGUI.addToEvents(ct.getName() + " has connected");
+                broadcastServEvents(ct.getName()+" has connected.");
 
             } catch (IOException e) {
                 System.out.println("Error with IO");
@@ -52,11 +53,21 @@ public class Server implements Runnable{
         }
     }//listening method
 
+    /**
+     * This method will iterate through all online clients and send them an event(string) from the server.
+     * @param msg the event to send.
+     */
+    synchronized static void broadcastServEvents(String msg){
+        System.out.println("event occured, broadcasting this event: "+msg);
+        for(ConnectionThread ct : connections){ //send to every client (to every connection thread).
+            ct.Print("Server System says: " + msg);
+        }
+    }
 
-    synchronized static void Broadcast(String msg, long threadID){
-        String msgsent = "ThreadID " + threadID +" Broadcasted: " + msg;
-        serverGUI.addToMsgs(msgsent);
-        System.out.println(msgsent);
+    synchronized static void broadcastMsgs(String msg, long threadID){
+        String msgSent = "ThreadID " + threadID +" Broadcasted: " + msg; //update threadID to username.
+        serverGUI.addToMsgs(msgSent);
+        System.out.println(msgSent);
         //serverGUI.addToMsgs("ThreadID "+threadID+" broadcasted: "+msg); //update threadID to username.
         for(ConnectionThread ct : connections){ //send to every client (to every connection thread).
            ct.Print("ThreadID " + threadID +" says: " + msg);
@@ -86,6 +97,12 @@ public class Server implements Runnable{
         }
     }
 
+    /**
+     * Going through all connection threads, and adding their names.
+     * This method will be called when "show online" button is pressed.
+     * @param threadID the threadID who called the function. (doesn't use it)
+     * @return String, contains all users.
+     */
     static String getUsersOnline(long threadID) {
         String allUsers = "";
 //        Iterator<ConnectionThread> it = connections.iterator();
@@ -110,9 +127,9 @@ public class Server implements Runnable{
         this.startServer();
     }
 
-
+    /******** Private *********/
     private static ArrayList<ConnectionThread> connections = new ArrayList<>();
     private int port;
     private boolean keepGoing = true;
-    private static ServerGUI serverGUI; //a GUI (on another thread) so the server can update some UI elements.
+    private static ServerGUI serverGUI; //a GUI (on another thread) so this server can update some UI elements.
 }

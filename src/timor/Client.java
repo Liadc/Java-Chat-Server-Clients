@@ -43,16 +43,14 @@ public class Client implements Runnable {
 
     }
 
-
-
-
     public void sendMsg(String msg) {
         writer.println(msg);
     }
 
-    public void shutdown() throws IOException {
+    public void closeConnection() throws IOException {
         keepGoing = false;
-        socket.close();
+        reader.close();
+
     }
 
     //Private Methods
@@ -60,7 +58,6 @@ public class Client implements Runnable {
     private void handleMsg(String msg) {
         clientGUI.addMsg(msg);
     }
-    //Bones
 
     private boolean keepGoing = true;
     private ClientGUI clientGUI;

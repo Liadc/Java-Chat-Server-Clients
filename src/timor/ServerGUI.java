@@ -1,7 +1,7 @@
 package timor;
 
 import javax.swing.*;
-import java.net.BindException;
+
 
 public class ServerGUI {
 
@@ -34,21 +34,21 @@ public class ServerGUI {
 
     }
 
-    public void addToEvents(String eventMsg){ //appending new event to according text area.
+    void addToEvents(String eventMsg){ //appending new event to according text area.
         eventsArea.append(eventMsg+"\n");
     }
-    public void addToMsgs(String chatMsg){//appending new chat message to according text area.
+    void addToMsgs(String chatMsg){//appending new chat message to according text area.
         chatArea.append(chatMsg+"\n");
     }
 
-    protected void toggleStartStopBtn(){
+    private void toggleStartStopBtn(){
         if (this.startServerButton.getText().equals("Start Server")) {
             this.startServerButton.setText("Stop Server");
         }else {
             this.startServerButton.setText("Start Server");
         }
     }
-    protected void toggleStartStopBtn(boolean stopped){
+    void toggleStartStopBtn(boolean stopped){
         if(stopped){
             this.startServerButton.setText("Start Server");
         }else{
@@ -57,7 +57,7 @@ public class ServerGUI {
     }
 
     public static void main(String[] args){
-        JFrame frame = new JFrame("Amazing Ex4 Chat App"); //new frame for our GUI
+        JFrame frame = new JFrame("Server - Amazing Ex4 Chat App"); //new frame for our GUI
         frame.setContentPane(new ServerGUI().panel1); //set the pane for the frame as our JPanel from our form.
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //the default close for the frame, just exit.
         frame.pack(); //causes the window to be sized to fit the preferred size and layouts of its sub-components.
