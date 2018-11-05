@@ -33,6 +33,7 @@ public class Server implements Runnable{
             e.printStackTrace();
         }
         this.keepGoing = true;
+      
         while(keepGoing){
             try {
                 serverGUI.addToEvents("Waiting for connections on port: "+this.port+ "....");
@@ -105,6 +106,11 @@ public class Server implements Runnable{
 
     @Override
     public void run() {
+        this.keepGoing = true;
         this.startServer();
+    }
+
+    public void stoplistening() {
+        this.keepGoing = false;
     }
 }
