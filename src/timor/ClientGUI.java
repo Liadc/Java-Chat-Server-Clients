@@ -1,7 +1,6 @@
 package timor;
 
 import javax.swing.*;
-import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
@@ -13,12 +12,10 @@ public class ClientGUI {
             try {
                 ip = InetAddress.getByName(ipField.getText());
                 port = Integer.parseInt(portField.getText());
-                client = new Client(ip,port);
+                client = new Client(ip,port,this);
                 Thread clientThread = new Thread(client);
                 clientThread.start();
             } catch (UnknownHostException e1) {
-                e1.printStackTrace();
-            } catch (IOException e1) {
                 e1.printStackTrace();
             }
 
@@ -62,4 +59,9 @@ public class ClientGUI {
     private JTextField msgField;
     private JLabel msgLabel;
     private JButton sendButton;
+    private JList connectedUsers;
+
+    public void addMsg(String msg) {
+        chatArea.append(msg + "\n");
+    }
 }

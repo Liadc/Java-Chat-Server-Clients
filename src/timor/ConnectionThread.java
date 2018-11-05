@@ -26,7 +26,6 @@ public class ConnectionThread extends Thread{
     @Override
     public void run() {
         System.out.println("Starting thread...");
-        writer.println("Hi from server thread, enter your name: ");
         String line = null;
         while (running) {
             try {

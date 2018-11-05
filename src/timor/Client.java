@@ -9,21 +9,43 @@ import java.net.Socket;
 
 public class Client implements Runnable {
 
-    public Client(InetAddress host,int port){
+    public Client(InetAddress host, int port, ClientGUI gui) {
         this.ip = host;
         this.port = port;
+        this.clientGUI = gui;
     }
 
 
     @Override
     public void run() {
         try {
-            socket = new Socket(this.ip,this.port);
+            socket = new Socket(this.ip, this.port);
             this.reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            this.writer = new PrintWriter(socket.getOutputStream(),true);
+            this.writer = new PrintWriter(socket.getOutputStream(), true);
         } catch (IOException e) {
             e.printStackTrace();
         }
+        Runnable chatViewer = () -> {
+            String line = null;
+            while (true) {
+                try {
+                    line = reader.readLine();
+                    if (line != null) {
+                        handleMsg(line);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        Thread chatThread = new Thread(chatViewer);
+        chatThread.start();
+
+    }
+
+
+    private void handleMsg(String msg) {
+        clientGUI.addMsg(msg);
     }
 
     public void sendMsg(String msg) {
@@ -35,6 +57,7 @@ public class Client implements Runnable {
 
     //Bones
 
+    private ClientGUI clientGUI;
     private int port;
     private InetAddress ip;
     private Socket socket;
