@@ -12,8 +12,8 @@ public class ClientGUI {
         connectButton.addActionListener(e -> {
             if (connectButton.getText().equals("Connect")){
             try {
-                ip = InetAddress.getByName(ipField.getText());
-                port = Integer.parseInt(portField.getText());
+                ip = InetAddress.getByName(ipField.getText()); //update: might fail, use try-catch.
+                port = Integer.parseInt(portField.getText()); //update: might fail, use try-catch.
                 client = new Client(ip, port, this);
                 Thread clientThread = new Thread(client);
                 clientThread.start();

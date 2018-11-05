@@ -33,7 +33,7 @@ public class ConnectionThread extends Thread{
                 if(line != null)
                     HandleMsg(line);
                 else{
-                    System.out.println("entered null, now removing u");
+                    System.out.println("ConnectionThread " +this.getId()+" entered null, killing this thread."); //just to indicate ourselves in console.
                     Server.removeConnection(getId());
                     shutdown();
                 }

@@ -22,17 +22,16 @@ public class Client implements Runnable {
             socket = new Socket(this.ip, this.port);
         } catch (IOException e) { //some error connecting, cannot even establish connection with socket.
             clientGUI.addMsg("Cannot connect to server: "+e);
-            return;
+            return; //kill current thread.
         }
         try{ //trying to create i/o streams.
             this.reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             this.writer = new PrintWriter(socket.getOutputStream(), true);
         }catch (IOException e1){
             clientGUI.addMsg("Cannot create input/output streams (reader/writer)");
-            return;
+            return; //kill current thread.
         }
         //we can now listen to the server, on another thread (so we don't block this thread!).
-        //**** ListenFromServer-Thread-HERE!!!!
         Runnable listeningToServer = () ->{
             String line;
             while (true){
@@ -41,22 +40,22 @@ public class Client implements Runnable {
                      if(line!=null){
                          clientGUI.addMsg(line);
                      }
-                }catch (IOException ioException){ //This means the connection is now closed, probably by the server.
-                    clientGUI.addMsg("You are disconnected. Server closed the connection.");
+                }catch (IOException ioException){ //This means the connection is now closed, probably by the server, but maybe by "Disconnect" button from client.
+                    clientGUI.addMsg("You are disconnected.");
+                    break;
                     //update: maybe change some GUI buttons to non-clickable if this happens.
                 }
             }
         };
         Thread listenServerThread = new Thread(listeningToServer);
         listenServerThread.start();
-
     }
 
-    void sendMsg(String msg) {
+    void sendMsg(String msg) { // does not update GUI, because it sends to the server. the server will update all GUIs accordingly.
         writer.println(msg);
     }
 
-    void closeConnection() { //update
+    void closeConnection() {
         try{
             if(writer != null){ writer.close(); }
         }catch (Exception e){
@@ -75,11 +74,7 @@ public class Client implements Runnable {
 
     }
 
-    //Private Methods
-
-    private void handleMsg(String msg) {
-        clientGUI.addMsg(msg);
-    }
+    //Private
 
     private boolean keepGoing = true;
     private ClientGUI clientGUI;
