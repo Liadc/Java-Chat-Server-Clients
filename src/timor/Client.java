@@ -9,10 +9,9 @@ import java.net.Socket;
 
 public class Client implements Runnable {
 
-    public Client(InetAddress host,int port,String name){
+    public Client(InetAddress host,int port){
         this.ip = host;
         this.port = port;
-
     }
 
 
@@ -38,7 +37,6 @@ public class Client implements Runnable {
 
     private int port;
     private InetAddress ip;
-    private String name;
     private Socket socket;
     private BufferedReader reader;
     private PrintWriter writer;

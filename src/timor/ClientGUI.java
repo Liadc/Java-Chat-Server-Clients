@@ -3,7 +3,6 @@ package timor;
 import javax.swing.*;
 import java.io.IOException;
 import java.net.InetAddress;
-import java.net.Socket;
 import java.net.UnknownHostException;
 
 public class ClientGUI {
@@ -14,7 +13,6 @@ public class ClientGUI {
             try {
                 ip = InetAddress.getByName(ipField.getText());
                 port = Integer.parseInt(portField.getText());
-                socket = new Socket(ip, port);
                 client = new Client(ip,port);
                 Thread clientThread = new Thread(client);
                 clientThread.start();
@@ -52,7 +50,6 @@ public class ClientGUI {
 
     private Client client;
     private int port;
-    private Socket socket;
     private InetAddress ip;
     private JButton connectButton;
     private JTextField ipField;
