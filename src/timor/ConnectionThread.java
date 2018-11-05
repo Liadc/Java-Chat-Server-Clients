@@ -45,7 +45,7 @@ public class ConnectionThread extends Thread{
 
 //            if(line.startsWith(""))
         }
-//        Server.removeConnection(getId());
+
 
     }
 
@@ -67,5 +67,6 @@ public class ConnectionThread extends Thread{
     }
     public void shutdown(){
        running = false;
+       Server.removeConnection(getId());
     }
 }

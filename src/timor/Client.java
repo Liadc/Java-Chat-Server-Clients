@@ -27,7 +27,7 @@ public class Client implements Runnable {
         }
         Runnable chatViewer = () -> {
             String line = null;
-            while (true) {
+            while (keepGoing) {
                 try {
                     line = reader.readLine();
                     if (line != null) {
@@ -44,24 +44,31 @@ public class Client implements Runnable {
     }
 
 
-    private void handleMsg(String msg) {
-        clientGUI.addMsg(msg);
-    }
+
 
     public void sendMsg(String msg) {
         writer.println(msg);
     }
 
+    public void shutdown() throws IOException {
+        keepGoing = false;
+        socket.close();
+    }
+
     //Private Methods
 
-
+    private void handleMsg(String msg) {
+        clientGUI.addMsg(msg);
+    }
     //Bones
 
+    private boolean keepGoing = true;
     private ClientGUI clientGUI;
     private int port;
     private InetAddress ip;
     private Socket socket;
     private BufferedReader reader;
     private PrintWriter writer;
+
 
 }

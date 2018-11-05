@@ -1,6 +1,7 @@
 package timor;
 
 import javax.swing.*;
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
@@ -9,17 +10,25 @@ public class ClientGUI {
 
     public ClientGUI() {
         connectButton.addActionListener(e -> {
+            if (connectButton.getText().equals("Connect")){
             try {
-                ip = InetAddress.getByName(ipField.getText());
+                    ip = InetAddress.getByName(ipField.getText());
                 port = Integer.parseInt(portField.getText());
-                client = new Client(ip,port,this);
+                client = new Client(ip, port, this);
                 Thread clientThread = new Thread(client);
                 clientThread.start();
             } catch (UnknownHostException e1) {
                 e1.printStackTrace();
             }
-
-
+            connectButton.setText("Disconnect");
+        }else{
+                try {
+                    client.shutdown();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+                connectButton.setText("Connect");
+            }
 
         });
         sendButton.addActionListener(e -> {
