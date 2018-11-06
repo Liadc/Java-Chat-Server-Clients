@@ -1,7 +1,6 @@
 package timor;
 
 import javax.swing.*;
-import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
@@ -34,6 +33,9 @@ public class ClientGUI {
         });
         sendButton.addActionListener(e -> {
            sendMsg(msgField.getText());
+        });
+        refreshButton.addActionListener(e -> {
+         client.requestOnline();
         });
     }
     public void addMsg(String msg) {
@@ -71,6 +73,12 @@ public class ClientGUI {
     private JTextField msgField;
     private JLabel msgLabel;
     private JButton sendButton;
-    private JList connectedUsers;
+    private JList<String>  connectedUsers;
+    private JButton refreshButton;
 
+    public void setListModel(DefaultListModel _model) {
+        DefaultListModel model = _model;
+        connectedUsers.setModel(model);
+        connectedUsers.setVisible(true);
+    }
 }

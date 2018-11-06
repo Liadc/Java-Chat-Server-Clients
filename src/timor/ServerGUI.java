@@ -32,11 +32,8 @@ public class ServerGUI {
 
 
         refreshButton.addActionListener(e -> {
-            System.out.println("test");
             DefaultListModel model = new DefaultListModel();
-            for(ConnectionThread c:Server.getConnections()){
-                model.addElement(c);
-            }
+            model.addAll(Server.getConnections());
             onlineUsers.setModel(model);
             onlineUsers.setVisible(true);
         });
