@@ -42,34 +42,12 @@
           <text value="Chat Messages:"/>
         </properties>
       </component>
-      <component id="49e06" class="javax.swing.JTextArea" binding="chatArea">
-        <constraints>
-          <grid row="2" column="0" row-span="1" col-span="2" vsize-policy="6" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false">
-            <preferred-size width="600" height="250"/>
-          </grid>
-        </constraints>
-        <properties>
-          <editable value="false"/>
-          <text value=""/>
-        </properties>
-      </component>
       <component id="5cb8c" class="javax.swing.JLabel" binding="eventsTitle">
         <constraints>
           <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
           <text value="Server Events:"/>
-        </properties>
-      </component>
-      <component id="6a0cb" class="javax.swing.JTextArea" binding="eventsArea">
-        <constraints>
-          <grid row="4" column="0" row-span="1" col-span="2" vsize-policy="6" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false">
-            <preferred-size width="600" height="250"/>
-          </grid>
-        </constraints>
-        <properties>
-          <editable value="false"/>
-          <text value=""/>
         </properties>
       </component>
       <component id="f5980" class="javax.swing.JLabel" binding="onlineUsersLabel">
@@ -96,6 +74,38 @@
           <text value="Refresh"/>
         </properties>
       </component>
+      <scrollpane id="94071">
+        <constraints>
+          <grid row="2" column="0" row-span="1" col-span="2" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <component id="49e06" class="javax.swing.JTextArea" binding="chatArea">
+            <constraints/>
+            <properties>
+              <editable value="false"/>
+              <text value=""/>
+            </properties>
+          </component>
+        </children>
+      </scrollpane>
+      <scrollpane id="25366">
+        <constraints>
+          <grid row="4" column="0" row-span="1" col-span="2" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <component id="6a0cb" class="javax.swing.JTextArea" binding="eventsArea">
+            <constraints/>
+            <properties>
+              <editable value="false"/>
+              <text value=""/>
+            </properties>
+          </component>
+        </children>
+      </scrollpane>
     </children>
   </grid>
 </form>
