@@ -58,7 +58,6 @@ public class Client implements Runnable {
 
          line = line.substring(1);
          String[] onlines = line.split(",");
-            System.out.println(Arrays.toString(onlines));
          DefaultListModel model = new DefaultListModel();
          model.addAll(Arrays.asList(onlines));
          clientGUI.setListModel(model);
