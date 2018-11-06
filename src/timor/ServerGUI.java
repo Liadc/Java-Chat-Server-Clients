@@ -32,18 +32,11 @@ public class ServerGUI {
 
 
         refreshButton.addActionListener(e -> {
-            DefaultListModel model = createModel();
+            DefaultListModel model = new DefaultListModel();
+            model.addAll(Server.getConnections());
             onlineUsers.setModel(model);
             onlineUsers.setVisible(true);
         });
-    }
-
-    private DefaultListModel createModel() {
-        DefaultListModel model = new DefaultListModel();
-        for(ConnectionThread c:Server.getConnections()){
-            model.addElement(c);
-        }
-        return model;
     }
 
     void addToEvents(String eventMsg) { //appending new event to according text area.
