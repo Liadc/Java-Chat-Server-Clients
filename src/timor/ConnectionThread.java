@@ -58,7 +58,7 @@ public class ConnectionThread extends Thread{
             Server.sendMsg(str.substring(1),getId());
         }
         else if(str.matches("\\$")){//to get all users online, type $
-            writer.println("All users connected: " + Server.getUsersOnline(getId()));
+            writer.println("$" + Server.getUsersOnline(getId()));
         }
     }
 
