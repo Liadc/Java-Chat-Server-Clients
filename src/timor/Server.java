@@ -127,6 +127,10 @@ public class Server implements Runnable{
         this.startServer();
     }
 
+    public static ArrayList<ConnectionThread> getConnections() {
+        return connections;
+    }
+
     /******** Private *********/
     private static ArrayList<ConnectionThread> connections = new ArrayList<>();
     private int port;
