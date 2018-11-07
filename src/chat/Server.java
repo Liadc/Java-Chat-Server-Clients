@@ -83,10 +83,8 @@ public class Server implements Runnable {
         boolean foundTargetUser = false; //indicate if we found target user.
         String msgTo = msg.substring(0, msg.indexOf(':'));
         long msgToID = Long.parseLong(msgTo); //update: this should be the username, stays string. no casting.
-        System.out.println("msgTo now equals: " + msgTo); //update: delete this.
         for (ConnectionThread ct : connections) {
             if (ct.getId() == msgToID) { //found the userID.
-                System.out.println("Found username!"); //update: delete this.
                 String pureMsg = msg.substring(msg.indexOf(':') + 1); //pure message is the text data in the message.
                 ct.print("From " + fromThreadID + ": " + pureMsg);
                 serverGUI.addToMsgs("User: " +fromThreadID +" sent a private message to "+ msgToID+": "+pureMsg); //just so the server knows about this.
@@ -107,9 +105,9 @@ public class Server implements Runnable {
         serverGUI.addToEvents(threadID + " asked to disconnect.");
         for (ConnectionThread ct : connections) {
             if (ct.getId() == threadID) {
+                broadcastServEvents(ct.getId() + " has disconnected.");
                 connections.remove(ct);
                 serverGUI.addToEvents(threadID + " has disconnected.");
-                broadcastServEvents(ct.getName() + " has disconnected.");
                 break;
             }
         }
