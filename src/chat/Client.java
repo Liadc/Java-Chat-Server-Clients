@@ -63,13 +63,15 @@ public class Client implements Runnable {
      *
      */
     private void handleMsg(String line) {
-        if (line.startsWith("!2") && line.length()>2) {
-         line = line.substring(2);
-         String[] onlines = line.split(",");
-         DefaultListModel model = new DefaultListModel();
-         model.addAll(Arrays.asList(onlines));
-         clientGUI.setListModel(model);
-
+        if (line.startsWith("!2")) {
+            if (line.length()<3){
+            }else {
+                line = line.substring(2);
+                String[] onlines = line.split(",");
+                DefaultListModel model = new DefaultListModel();
+                model.addAll(Arrays.asList(onlines));
+                clientGUI.setListModel(model);
+            }
         } else {
             clientGUI.addMsg(line);
         }

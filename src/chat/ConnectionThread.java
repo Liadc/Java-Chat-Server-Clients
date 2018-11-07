@@ -55,8 +55,9 @@ public class ConnectionThread extends Thread {
             Server.sendMsg(str.substring(1), getId());
         } else if (str.startsWith("!2")) {//to get all users online, type !2
             writer.println("!2" + Server.getUsersOnline(getId()));
+        }else {
+            Server.broadcastMsgs(str, getId());//normal messages send through broadcast.
         }
-        Server.broadcastMsgs(str, getId());//normal messages send through broadcast.
     }
 
     public void Print(String str) {

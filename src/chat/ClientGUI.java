@@ -22,7 +22,6 @@ public class ClientGUI {
             }
         }else{
                 try {
-                    sendMsg("!2");
                     client.closeConnection();
                 } catch (Exception e1) { //update to correct exception
                     System.out.println("Exception thrown!!!");
@@ -35,9 +34,7 @@ public class ClientGUI {
         sendButton.addActionListener(e -> {
            sendMsg(msgField.getText());
         });
-        refreshButton.addActionListener(e -> {
-         client.requestOnline();
-        });
+        refreshButton.addActionListener(e -> client.requestOnline());
     }
     public void addMsg(String msg) {
         chatArea.append(msg + "\n");
