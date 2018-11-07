@@ -11,7 +11,7 @@ public class ClientGUI {
 
 
     public ClientGUI() {
-
+        //actionListener for red X Jframe close button.
         frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent we)
@@ -28,6 +28,7 @@ public class ClientGUI {
             }
         });
 
+        //actionListener for Connect/Disconnect button.
         connectButton.addActionListener(e -> {
             if (connectButton.getText().equals("Connect")){
             try {
@@ -52,9 +53,16 @@ public class ClientGUI {
 
         }); //end actionListener for connect/disconnect button.
 
+        //actionListener for "Send" button.
         sendButton.addActionListener(e -> {
-           sendMsg(msgField.getText());
+            if(connectButton.getText().equals("Disconnect")){ //indicates client is connected.
+                sendMsg(msgField.getText());
+            }
+           msgField.setText(""); //empty text area after message sent.
+
         }); //end actionListener for sendButton.
+
+        //actionListener for "Refresh" button.
         refreshButton.addActionListener(e -> client.requestOnline()); //end actionListener for refreshButton.
 
     }
