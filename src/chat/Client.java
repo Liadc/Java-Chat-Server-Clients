@@ -53,8 +53,8 @@ public class Client implements Runnable {
         listenServerThread.start();
     }
 
-
-    public void requestOnline() {
+    //a message "!2" indicates a request for all online users.
+    void requestOnline() {
         sendMsg("!2");
     }
 

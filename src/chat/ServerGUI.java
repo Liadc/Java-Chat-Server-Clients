@@ -10,8 +10,7 @@ public class ServerGUI {
 
 
     ServerGUI() { //constructor.
-
-
+        //actionListener for red X button to close window.
         frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent we)
@@ -45,6 +44,7 @@ public class ServerGUI {
                 toggleStartStopBtn();
 
             } else {
+                Server.broadcastServEvents("Server is shutting down.."); //sends all clients, server is closing down.
                 server.stopServer();
                 addToEvents("Server has shut down.");
             }

@@ -33,19 +33,14 @@ public class ConnectionThread extends Thread {
                 if (line != null)
                     HandleMsg(line);
                 else {
-                    System.out.println("ConnectionThread " + this.getId() + " entered null, killing this thread."); //just to indicate ourselves in console.
+                    System.out.println("ConnectionThread " + this.getId() + " entered NULL, killing this thread."); //just to indicate ourselves in console.
                     shutdown();
                 }
             } catch (Exception e) {
-                System.out.println("Some exception in thread");
+                System.out.println("Some exception in ConnectionThread: "+this.getId());
                 e.printStackTrace();
             }
-
-
-//            if(line.startsWith(""))
         }
-
-
     }
 
     // !1  indicates the client want to send a private message.
