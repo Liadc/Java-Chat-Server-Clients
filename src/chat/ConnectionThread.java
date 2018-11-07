@@ -53,7 +53,7 @@ public class ConnectionThread extends Thread {
         if (str.startsWith("!1")) { //private message another client
             System.out.println("Sending request from thread to Server, im asking to privateMessage");
             Server.sendMsg(str.substring(1), getId());
-        } else if (str.startsWith("!2")) {//to get all users online, type $
+        } else if (str.startsWith("!2")) {//to get all users online, type !2
             writer.println("!2" + Server.getUsersOnline(getId()));
         }
         Server.broadcastMsgs(str, getId());//normal messages send through broadcast.

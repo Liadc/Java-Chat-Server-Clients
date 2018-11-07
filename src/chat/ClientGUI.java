@@ -22,7 +22,7 @@ public class ClientGUI {
             }
         }else{
                 try {
-                    sendMsg("");
+                    sendMsg("!2");
                     client.closeConnection();
                 } catch (Exception e1) { //update to correct exception
                     System.out.println("Exception thrown!!!");
