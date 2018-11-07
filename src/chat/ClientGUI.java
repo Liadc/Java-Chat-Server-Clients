@@ -58,12 +58,22 @@ public class ClientGUI {
             if(connectButton.getText().equals("Disconnect")){ //indicates client is connected.
                 sendMsg(msgField.getText());
             }
+            else{
+                addMsg("You are disconnected, cannot send message...");
+            }
            msgField.setText(""); //empty text area after message sent.
 
         }); //end actionListener for sendButton.
 
         //actionListener for "Refresh" button.
-        refreshButton.addActionListener(e -> client.requestOnline()); //end actionListener for refreshButton.
+        refreshButton.addActionListener(e -> { //indicates client is connected.
+            if (connectButton.getText().equals("Disconnect")) { //only if user is connected.
+                client.requestOnline();
+            }
+            else{
+                addMsg("You are disconnected, cannot refresh online users list...");
+            }
+        }); //end actionListener for refreshButton.
 
     }
     public void addMsg(String msg) {
