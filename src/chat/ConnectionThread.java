@@ -61,7 +61,7 @@ public class ConnectionThread extends Thread {
         }
     }
 
-    public void Print(String str) {
+    public void print(String str) {
         writer.println(str);
     }
 

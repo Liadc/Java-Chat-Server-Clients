@@ -62,7 +62,7 @@ public class Server implements Runnable {
     synchronized static void broadcastServEvents(String msg) {
         System.out.println("event occured, broadcasting this event: " + msg);
         for (ConnectionThread ct : connections) { //send to every client (to every connection thread).
-            ct.Print("Server System says: " + msg);
+            ct.print("Server System says: " + msg);
         }
     }
 
@@ -72,7 +72,7 @@ public class Server implements Runnable {
         System.out.println(msgSent);
         //serverGUI.addToMsgs("ThreadID "+threadID+" broadcasted: "+msg); //update threadID to username.
         for (ConnectionThread ct : connections) { //send to every client (to every connection thread).
-            ct.Print("ThreadID " + threadID + " says: " + msg);
+            ct.print("ThreadID " + threadID + " says: " + msg);
         }
     }
 
@@ -84,7 +84,7 @@ public class Server implements Runnable {
         for (ConnectionThread ct : connections) {
             if (ct.getId() == msgToID) {
                 System.out.println("Entered if");
-                ct.Print("From " + threadID + ": " + msg.substring(msg.indexOf(':') + 1));
+                ct.print("From " + threadID + ": " + msg.substring(msg.indexOf(':') + 1));
             }
             //continue
         }
