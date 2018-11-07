@@ -2,6 +2,8 @@ package chat;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.net.InetAddress;
@@ -54,17 +56,39 @@ public class ClientGUI {
         }); //end actionListener for connect/disconnect button.
 
         //actionListener for "Send" button.
-        sendButton.addActionListener(e -> {
+        sendAllButton.addActionListener(e -> {
             if(connectButton.getText().equals("Disconnect")){ //indicates client is connected.
                 sendMsg(msgField.getText());
             }
+            else{
+                addMsg("You are disconnected, cannot send message...");
+            }
            msgField.setText(""); //empty text area after message sent.
 
-        }); //end actionListener for sendButton.
+        }); //end actionListener for sendAllButton.
 
         //actionListener for "Refresh" button.
-        refreshButton.addActionListener(e -> client.requestOnline()); //end actionListener for refreshButton.
+        refreshButton.addActionListener(e -> { //indicates client is connected.
+            if (connectButton.getText().equals("Disconnect")) { //only if user is connected.
+                client.requestOnline();
+            }
+            else{
+                addMsg("You are disconnected, cannot refresh online users list...");
+            }
+        }); //end actionListener for refreshButton.
 
+        //actionListener for "Send Private Message" button.
+        sendPvtMsgBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (connectButton.getText().equals("Disconnect")) { //only if user is connected.
+                    //try to send private message here.
+                }
+                else{
+                    addMsg("You are disconnected, cannot send private message...");
+                }
+            }
+        });
     }
     public void addMsg(String msg) {
         chatArea.append(msg + "\n");
@@ -76,8 +100,8 @@ public class ClientGUI {
 //        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //the default close for the frame, just exit.
         frame.pack(); //causes the window to be sized to fit the preferred size and layouts of its sub-components.
         frame.setVisible(true); //showing the frame to the screen.
-        frame.setMinimumSize(new Dimension(600,420));
-        frame.setSize(600,440);
+        frame.setMinimumSize(new Dimension(630,420));
+        frame.setSize(640,440);
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         new ClientGUI(); //calls constructor.
     }
@@ -108,8 +132,14 @@ public class ClientGUI {
     private JPanel mainPanel;
     private JTextField msgField;
     private JLabel msgLabel;
-    private JButton sendButton;
+    private JButton sendAllButton;
     private JList<String>  connectedUsers;
     private JButton refreshButton;
+    private JLabel privateMsgLabel;
+    private JTextField userPvtMsgName;
+    private JTextField pvtMsgText;
+    private JLabel onlineUsersLabel;
+    private JLabel pvtMsgLabel;
+    private JButton sendPvtMsgBtn;
 
 }
