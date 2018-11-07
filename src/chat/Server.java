@@ -29,6 +29,7 @@ public class Server implements Runnable {
             stopServer();
         } catch (IOException e) {
             e.printStackTrace();
+            stopServer();
         }
 
         while (keepGoing) {
@@ -75,6 +76,7 @@ public class Server implements Runnable {
         }
     }
 
+    //to private message between clients.
     synchronized static void sendMsg(String msg, long threadID) { //update: optimize this, changes needed
         String msgTo = msg.substring(0, msg.indexOf(':'));
         long msgToID = Long.parseLong(msgTo);
@@ -92,7 +94,8 @@ public class Server implements Runnable {
         for (ConnectionThread ct : connections) {
             if (ct.getId() == threadID) {
                 connections.remove(ct);
-                serverGUI.addToEvents(ct.getName() + " has disconnected");
+                serverGUI.addToEvents(ct.getName() + " asked to disconnect.");
+                broadcastServEvents(ct.getName() + " has disconnected.");
                 break;
             }
         }
