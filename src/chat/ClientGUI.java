@@ -1,6 +1,7 @@
 package chat;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.net.InetAddress;
@@ -10,7 +11,7 @@ public class ClientGUI {
 
 
     public ClientGUI() {
-
+        //actionListener for red X Jframe close button.
         frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent we)
@@ -27,6 +28,7 @@ public class ClientGUI {
             }
         });
 
+        //actionListener for Connect/Disconnect button.
         connectButton.addActionListener(e -> {
             if (connectButton.getText().equals("Connect")){
             try {
@@ -51,9 +53,16 @@ public class ClientGUI {
 
         }); //end actionListener for connect/disconnect button.
 
+        //actionListener for "Send" button.
         sendButton.addActionListener(e -> {
-           sendMsg(msgField.getText());
+            if(connectButton.getText().equals("Disconnect")){ //indicates client is connected.
+                sendMsg(msgField.getText());
+            }
+           msgField.setText(""); //empty text area after message sent.
+
         }); //end actionListener for sendButton.
+
+        //actionListener for "Refresh" button.
         refreshButton.addActionListener(e -> client.requestOnline()); //end actionListener for refreshButton.
 
     }
@@ -67,6 +76,8 @@ public class ClientGUI {
 //        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //the default close for the frame, just exit.
         frame.pack(); //causes the window to be sized to fit the preferred size and layouts of its sub-components.
         frame.setVisible(true); //showing the frame to the screen.
+        frame.setMinimumSize(new Dimension(600,420));
+        frame.setSize(600,440);
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         new ClientGUI(); //calls constructor.
     }
