@@ -33,16 +33,33 @@ public class ClientGUI {
         //actionListener for Connect/Disconnect button.
         connectButton.addActionListener(e -> {
             if (connectButton.getText().equals("Connect")){
-            try {
-                ip = InetAddress.getByName(ipField.getText()); //update: might fail, use try-catch.
-                port = Integer.parseInt(portField.getText()); //update: might fail, use try-catch.
-                client = new Client(ip, port, this);
+                //check for valid inputs here, as well as username/port/ip etc. before try/catch.
+                if (usernameTextField.getText() == null || usernameTextField.getText().equals("")) {
+                    addMsg("You must enter a username!");
+                    return;
+                }
+                //lets check IP and PORT are valid.
+                try{
+                    ip = InetAddress.getByName(ipField.getText());
+                    port = Integer.parseInt(portField.getText()); //update: might fail, use try-catch.
+                } catch (UnknownHostException e1) {
+                    addMsg("Invalid IP provided. Unknown host.");
+                    return;
+                } catch (NumberFormatException e1){
+                    addMsg("Invalid port provided. Must be an integer between 1024-65553");
+                    return;
+                }
+                if(port<1024 || port >65553){ //only this range is valid.
+                    addMsg("Invalid port provided. Must be an integer between 1024-65553");
+                    return;
+                }
+
+                //we can now try to connect on another Thread.
+                client = new Client(ip, port, this,usernameTextField.getText());
                 Thread clientThread = new Thread(client);
                 clientThread.start();
                 connectButton.setText("Disconnect");
-            } catch (UnknownHostException e1) { //update to meaningful error and change gui accordingly.
-                e1.printStackTrace();
-            }
+
         }else{
                 try {
                     client.closeConnection();
@@ -78,34 +95,38 @@ public class ClientGUI {
         }); //end actionListener for refreshButton.
 
         //actionListener for "Send Private Message" button.
-        sendPvtMsgBtn.addActionListener(new ActionListener() {
+        sendPvtMsgBtn.addActionListener(e -> {
+            if (connectButton.getText().equals("Disconnect")) { //only if user is connected.
+                //try to send private message here.
+                String pvtMsg = "!1" + userPvtMsgName.getText()+":"+pvtMsgText.getText();
+                client.sendMsg(pvtMsg);
+                addMsg("Sending message to " +userPvtMsgName.getText()+":"+pvtMsgText.getText());
+            }
+            else{
+                addMsg("You are disconnected, cannot send private message...");
+            }
+        });
+        //actionListener for "clearTextBtn"
+        clearTextBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (connectButton.getText().equals("Disconnect")) { //only if user is connected.
-                    //try to send private message here.
-                    String pvtMsg = "!1" + userPvtMsgName.getText()+":"+pvtMsgText.getText();
-                    client.sendMsg(pvtMsg);
-                    addMsg("Sending message to " +userPvtMsgName.getText()+":"+pvtMsgText.getText());
-                }
-                else{
-                    addMsg("You are disconnected, cannot send private message...");
-                }
+                chatArea.setText("");
             }
         });
     }
-    public void addMsg(String msg) {
+
+    void addMsg(String msg) {
         chatArea.append(msg + "\n");
     }
 
     public static void main(String[] args) {
         frame = new JFrame("Client - Amazing Ex4 Chat App"); //new frame for our GUI
         frame.setContentPane(new ClientGUI().mainPanel); //set the pane for the frame as our JPanel from our form.
-//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //the default close for the frame, just exit.
         frame.pack(); //causes the window to be sized to fit the preferred size and layouts of its sub-components.
         frame.setVisible(true); //showing the frame to the screen.
         frame.setMinimumSize(new Dimension(630,420));
         frame.setSize(640,440);
-        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE); //the default close for the frame, do nothing, because we will prompt a confirmation message. (in constructor).
         new ClientGUI(); //calls constructor.
     }
 
@@ -114,6 +135,10 @@ public class ClientGUI {
         DefaultListModel model = _model;
         connectedUsers.setModel(model);
         connectedUsers.setVisible(true);
+    }
+
+    JButton getConnectBtn(){ //will be used by Client.java to update button when connection is terminated or failed.
+        return this.connectButton;
     }
 
     /******* Private *********/
@@ -144,5 +169,8 @@ public class ClientGUI {
     private JLabel onlineUsersLabel;
     private JLabel pvtMsgLabel;
     private JButton sendPvtMsgBtn;
+    private JButton clearTextBtn;
+    private JLabel usernameLabel;
+    private JTextField usernameTextField;
 
 }

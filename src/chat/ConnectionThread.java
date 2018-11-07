@@ -11,7 +11,7 @@ public class ConnectionThread extends Thread {
     private BufferedReader reader;
     private PrintWriter writer;
     private boolean running = true;
-//   String name;
+    private String tempUsername = this.getName(); //first initial name provided by thread.
 
     public ConnectionThread(Socket sock) {
         this.mySocket = sock;
@@ -37,7 +37,7 @@ public class ConnectionThread extends Thread {
                     shutdown();
                 }
             } catch (Exception e) {
-                System.out.println("Some exception in ConnectionThread: "+this.getId());
+                System.out.println("Some exception in ConnectionThread: " + this.getId());
                 e.printStackTrace();
             }
         }
@@ -46,7 +46,7 @@ public class ConnectionThread extends Thread {
     // !1  indicates the client want to send a private message.
     // !2  indicates the client want to get all online users.
     // !3  indicates the client wants to disconnect.
-    // !4  indicates the client ADD HERE
+    // !4  indicates the client asks to save his name.
     // nothing entered  indicates the client wants to broadcast to everyone.
     private void HandleMsg(String str) {
         if (str.startsWith("!1")) { //private message another client
@@ -56,10 +56,18 @@ public class ConnectionThread extends Thread {
             writer.println("!2" + Server.getUsersOnline(getId()));
         } else if (str.startsWith("!3")) {//client asks to disconnect.
             this.shutdown();
+        } else if (str.startsWith("!4")) {//client asks to set his username.
+            String username = str.substring(2);
+            if(this.getName()==tempUsername){ //if we haven't choose a name yet, we still have the name which the thread gave us initially.
+                this.setName(username); //we can update our name, once.
+            }else{ //if user already has a username.
+                writer.println("You already provided a username.");
+            }
         } else {
             Server.broadcastMsgs(str, getId());//normal messages send through broadcast.
         }
-    }
+
+}
 
     public void print(String str) {
         writer.println(str);

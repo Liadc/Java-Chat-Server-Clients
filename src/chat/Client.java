@@ -11,10 +11,11 @@ import java.util.Arrays;
 
 public class Client implements Runnable {
 
-    public Client(InetAddress host, int port, ClientGUI gui) {
+    public Client(InetAddress host, int port, ClientGUI gui, String username) {
         this.ip = host;
         this.port = port;
         this.clientGUI = gui;
+        this.username = username;
     }
 
 
@@ -23,7 +24,8 @@ public class Client implements Runnable {
         try { //trying to connect
             socket = new Socket(this.ip, this.port);
         } catch (IOException e) { //some error connecting, cannot even establish connection with socket.
-            clientGUI.addMsg("Cannot connect to server: " + e);
+            clientGUI.addMsg("Cannot connect to server: connection refused. \nPlease check your input. The server might also be offline." ); //connection refused.
+            clientGUI.getConnectBtn().setText("Connect");
             return; //kill current thread.
         }
         try { //trying to create i/o streams.
@@ -51,6 +53,12 @@ public class Client implements Runnable {
         };
         Thread listenServerThread = new Thread(listeningToServer);
         listenServerThread.start();
+        //after connection made, listening to server, we can request new username for ourselves.
+        requestUsername(this.username);
+    }
+
+    private void requestUsername(String username) {
+        sendMsg("!4"+username);
     }
 
     //a message "!2" indicates a request for all online users.
@@ -88,6 +96,7 @@ public class Client implements Runnable {
 
     //Private
 
+    private String username;
     private boolean keepGoing = true;
     private ClientGUI clientGUI;
     private int port;
