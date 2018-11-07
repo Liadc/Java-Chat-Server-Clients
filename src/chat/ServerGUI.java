@@ -10,6 +10,23 @@ public class ServerGUI {
 
 
     ServerGUI() { //constructor.
+
+
+        frame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent we)
+            {
+                String ObjButtons[] = {"Yes","No"};
+                int PromptResult = JOptionPane.showOptionDialog(null,"Are you sure you want to exit? Liad & Timor will miss you.","Online Examination System",JOptionPane.DEFAULT_OPTION,JOptionPane.WARNING_MESSAGE,null,ObjButtons,ObjButtons[1]);
+                if(PromptResult==JOptionPane.YES_OPTION)
+                {
+                    Server.broadcastServEvents("Server is shutting down.."); //sends all clients, server is closing down.
+                    System.exit(0);
+                }
+            }
+        });
+
+        //actionListener for Start/Stop button.
         startServerButton.addActionListener(e -> { //lambda function
             if (startServerButton.getText().equals("Start Server")) {
                 int portInteger = 1337; //our default port
@@ -67,19 +84,18 @@ public class ServerGUI {
     }
 
     public static void main(String[] args) {
-        JFrame frame = new JFrame("Server - Amazing Ex4 Chat App"); //new frame for our GUI
+        frame = new JFrame("Server - Amazing Ex4 Chat App"); //new frame for our GUI
         frame.setContentPane(new ServerGUI().panel1); //set the pane for the frame as our JPanel from our form.
         frame.pack(); //causes the window to be sized to fit the preferred size and layouts of its sub-components.
         frame.setMinimumSize(new Dimension(650,490));
         frame.setSize(700,500);
         frame.setVisible(true); //showing the frame to the screen.
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        ClientGUI.xButtonPressed(frame); //listener for the X button. will show a message. same listener for the ClientGUI, we made a static function.
-
         new ServerGUI(); //calls the constructor.
     }
 
     /******* Private ********/
+    private static JFrame frame;
     private JPanel panel1;
     private JButton startServerButton;
     private JTextField portField;

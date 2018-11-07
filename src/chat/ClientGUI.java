@@ -10,6 +10,23 @@ public class ClientGUI {
 
 
     public ClientGUI() {
+
+        frame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent we)
+            {
+                String ObjButtons[] = {"Yes","No"};
+                int PromptResult = JOptionPane.showOptionDialog(null,"Are you sure you want to exit? Liad & Timor will miss you.","Online Examination System",JOptionPane.DEFAULT_OPTION,JOptionPane.WARNING_MESSAGE,null,ObjButtons,ObjButtons[1]);
+                if(PromptResult==JOptionPane.YES_OPTION)
+                {
+                    if (connectButton.getText().equals("Disconnect")) { //this indicates the client is connected at this moment.
+                        sendMsg("!3"); //sends the server !3 , indicating ask to disconnect.
+                    }
+                    System.exit(0);
+                }
+            }
+        });
+
         connectButton.addActionListener(e -> {
             if (connectButton.getText().equals("Connect")){
             try {
@@ -32,42 +49,33 @@ public class ClientGUI {
                 connectButton.setText("Connect");
             }
 
-        });
+        }); //end actionListener for connect/disconnect button.
+
         sendButton.addActionListener(e -> {
            sendMsg(msgField.getText());
-        });
-        refreshButton.addActionListener(e -> client.requestOnline());
+        }); //end actionListener for sendButton.
+        refreshButton.addActionListener(e -> client.requestOnline()); //end actionListener for refreshButton.
+
     }
     public void addMsg(String msg) {
         chatArea.append(msg + "\n");
     }
 
     public static void main(String[] args) {
-
-        JFrame frame = new JFrame("Client - Amazing Ex4 Chat App"); //new frame for our GUI
+        frame = new JFrame("Client - Amazing Ex4 Chat App"); //new frame for our GUI
         frame.setContentPane(new ClientGUI().mainPanel); //set the pane for the frame as our JPanel from our form.
 //        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //the default close for the frame, just exit.
         frame.pack(); //causes the window to be sized to fit the preferred size and layouts of its sub-components.
         frame.setVisible(true); //showing the frame to the screen.
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        xButtonPressed(frame); //listener for the X button. will show a message. ame listener for the ServerGUIs, we made a static function.
-
-        new ClientGUI();
+        new ClientGUI(); //calls constructor.
     }
 
-    static void xButtonPressed(JFrame frame) {
-        frame.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent we)
-            {
-                String ObjButtons[] = {"Yes","No"};
-                int PromptResult = JOptionPane.showOptionDialog(null,"Are you sure you want to exit? Liad & Timor will miss you.","Online Examination System",JOptionPane.DEFAULT_OPTION,JOptionPane.WARNING_MESSAGE,null,ObjButtons,ObjButtons[1]);
-                if(PromptResult==JOptionPane.YES_OPTION)
-                {
-                    System.exit(0);
-                }
-            }
-        });
+
+    public void setListModel(DefaultListModel _model) {
+        DefaultListModel model = _model;
+        connectedUsers.setModel(model);
+        connectedUsers.setVisible(true);
     }
 
     /******* Private *********/
@@ -75,7 +83,7 @@ public class ClientGUI {
     private void sendMsg(String msg) {
         client.sendMsg(msg);
     }
-
+    private static JFrame frame;
     private Client client;
     private int port;
     private InetAddress ip;
@@ -93,9 +101,4 @@ public class ClientGUI {
     private JList<String>  connectedUsers;
     private JButton refreshButton;
 
-    public void setListModel(DefaultListModel _model) {
-        DefaultListModel model = _model;
-        connectedUsers.setModel(model);
-        connectedUsers.setVisible(true);
-    }
 }
