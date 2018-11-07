@@ -53,28 +53,9 @@ public class Client implements Runnable {
         listenServerThread.start();
     }
 
-    /**
-     *
-     * @param line - represents string by the form:
-     *             if starts with !2 so its in the form !2ID1,ID2,ID3,ID4 where IDi where i is ID.
-     *             else if PRIVETMSG - start with !1 so its in the form !1ID:MSG
-     *             else,
-     *             send the msg to the ClientGUI
-     *
-     */
-    private void handleMsg(String line) {
-        if (line.startsWith("!2")) {
-            if (line.length()<3){
-            }else {
-                line = line.substring(2);
-                String[] onlines = line.split(",");
-                DefaultListModel model = new DefaultListModel();
-                model.addAll(Arrays.asList(onlines));
-                clientGUI.setListModel(model);
-            }
-        } else {
-            clientGUI.addMsg(line);
-        }
+
+    public void requestOnline() {
+        sendMsg("!2");
     }
 
     void sendMsg(String msg) { // does not update GUI, because it sends to the server. the server will update all GUIs accordingly.
@@ -103,9 +84,6 @@ public class Client implements Runnable {
         } catch (Exception e) {
             clientGUI.addMsg("Error with closing socket!");
         }
-
-
-
     }
 
     //Private
@@ -118,8 +96,29 @@ public class Client implements Runnable {
     private BufferedReader reader;
     private PrintWriter writer;
 
-
-    public void requestOnline() {
-        sendMsg("!2");
+    /**
+     *
+     * @param line - represents string by the form:
+     *             if starts with !2 so its in the form !2ID1,ID2,ID3,ID4 where IDi where i is ID.
+     *             else if PRIVETMSG - start with !1 so its in the form !1ID:MSG
+     *             else,
+     *             send the msg to the ClientGUI
+     *
+     */
+    private void handleMsg(String line) {
+        if (line.startsWith("!2")) {
+            if (line.length()<3){
+            }else {
+                line = line.substring(2);
+                String[] onlines = line.split(",");
+                DefaultListModel model = new DefaultListModel();
+                model.addAll(Arrays.asList(onlines));
+                clientGUI.setListModel(model);
+            }
+        } else {
+            clientGUI.addMsg(line);
+        }
     }
+
+
 }
