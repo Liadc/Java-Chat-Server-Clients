@@ -1,4 +1,4 @@
-package timor;
+package chat;
 
 import javax.swing.*;
 import java.net.InetAddress;
@@ -22,6 +22,7 @@ public class ClientGUI {
             }
         }else{
                 try {
+                    sendMsg("");
                     client.closeConnection();
                 } catch (Exception e1) { //update to correct exception
                     System.out.println("Exception thrown!!!");

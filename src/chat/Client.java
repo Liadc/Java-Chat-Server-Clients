@@ -1,4 +1,4 @@
-package timor;
+package chat;
 
 import javax.swing.*;
 import java.io.BufferedReader;
@@ -53,10 +53,18 @@ public class Client implements Runnable {
         listenServerThread.start();
     }
 
+    /**
+     *
+     * @param line - represents string by the form:
+     *             if starts with !2 so its in the form !2ID1,ID2,ID3,ID4 where IDi where i is ID.
+     *             else if PRIVETMSG - start with !1 so its in the form !1ID:MSG
+     *             else,
+     *             send the msg to the ClientGUI
+     *
+     */
     private void handleMsg(String line) {
-        if (line.charAt(0)=='$' && line.length()>1) {
-
-         line = line.substring(1);
+        if (line.startsWith("!2") && line.length()>2) {
+         line = line.substring(2);
          String[] onlines = line.split(",");
          DefaultListModel model = new DefaultListModel();
          model.addAll(Arrays.asList(onlines));
@@ -94,6 +102,8 @@ public class Client implements Runnable {
             clientGUI.addMsg("Error with closing socket!");
         }
 
+
+
     }
 
     //Private
@@ -108,6 +118,6 @@ public class Client implements Runnable {
 
 
     public void requestOnline() {
-        sendMsg("$");
+        sendMsg("!2");
     }
 }

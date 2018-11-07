@@ -1,6 +1,7 @@
-package timor;
+package chat;
 
 import javax.swing.*;
+import java.awt.*;
 
 
 public class ServerGUI {
@@ -30,7 +31,7 @@ public class ServerGUI {
             }
         });
 
-
+        // refresh button is pressed.
         refreshButton.addActionListener(e -> {
             DefaultListModel model = new DefaultListModel();
             model.addAll(Server.getConnections());
@@ -68,6 +69,8 @@ public class ServerGUI {
         frame.setContentPane(new ServerGUI().panel1); //set the pane for the frame as our JPanel from our form.
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //the default close for the frame, just exit.
         frame.pack(); //causes the window to be sized to fit the preferred size and layouts of its sub-components.
+        frame.setMinimumSize(new Dimension(650,490));
+        frame.setSize(700,500);
         frame.setVisible(true); //showing the frame to the screen.
 
 
@@ -86,6 +89,7 @@ public class ServerGUI {
     private JList<String> onlineUsers;
     private JLabel onlineUsersLabel;
     private JButton refreshButton;
+    private JScrollPane chatScroll;
     private Server server;
 
 
