@@ -1,4 +1,4 @@
-package timor;
+package chat;
 
 import java.io.IOException;
 import java.net.BindException;
@@ -6,34 +6,34 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 
-public class Server implements Runnable{
+public class Server implements Runnable {
 
-    Server(int port){
+    Server(int port) {
         this.port = port;
     } //constructor for Server. doesn't use GUI.
     // This is mainly used to complete the functions needed using CMD client<->server communication using TELNET without any GUI developed.
 
-    Server(int port, ServerGUI anyGUI){ //Providing a GUI so the server can update some UI elements in another thread.
+    Server(int port, ServerGUI anyGUI) { //Providing a GUI so the server can update some UI elements in another thread.
         this.port = port;
         serverGUI = anyGUI;
     }
 
-    private void startServer(){
+    private void startServer() {
         this.keepGoing = true;
         ServerSocket server = null;
 
         try {
             server = new ServerSocket(port);
-        } catch (BindException bException){ //port is binded and already in use.
+        } catch (BindException bException) { //port is binded and already in use.
             serverGUI.addToEvents("Recently used this port, try a different port!");
             stopServer();
         } catch (IOException e) {
             e.printStackTrace();
         }
-      
-        while(keepGoing){
+
+        while (keepGoing) {
             try {
-                serverGUI.addToEvents("Waiting for connections on port: "+this.port+ "....");
+                serverGUI.addToEvents("Waiting for connections on port: " + this.port + "....");
                 Socket connection = server.accept();
                 ConnectionThread ct = new ConnectionThread(connection);
                 connections.add(ct);
@@ -41,12 +41,12 @@ public class Server implements Runnable{
 //                serverGUI.addToEvents("Server started on new Thread, listening on port " + this.port + "..."); //update: actual message has to be
 // something like "connection made with client, initiating new thread for the server, to keep listening..."
                 serverGUI.addToEvents(ct.getName() + " has connected");
-                broadcastServEvents(ct.getName()+" has connected.");
+                broadcastServEvents(ct.getName() + " has connected.");
 
             } catch (IOException e) {
                 System.out.println("Error with IO");
                 e.printStackTrace();
-            } catch (NullPointerException nullPointerException){
+            } catch (NullPointerException nullPointerException) {
                 serverGUI.addToEvents("Recently used port, try a different port.");
                 stopServer();
             }
@@ -55,41 +55,42 @@ public class Server implements Runnable{
 
     /**
      * This method will iterate through all online clients and send them an event(string) from the server.
+     *
      * @param msg the event to send.
      */
-    synchronized static void broadcastServEvents(String msg){
-        System.out.println("event occured, broadcasting this event: "+msg);
-        for(ConnectionThread ct : connections){ //send to every client (to every connection thread).
+    synchronized static void broadcastServEvents(String msg) {
+        System.out.println("event occured, broadcasting this event: " + msg);
+        for (ConnectionThread ct : connections) { //send to every client (to every connection thread).
             ct.Print("Server System says: " + msg);
         }
     }
 
-    synchronized static void broadcastMsgs(String msg, long threadID){
-        String msgSent = "ThreadID " + threadID +" Broadcasted: " + msg; //update threadID to username.
+    synchronized static void broadcastMsgs(String msg, long threadID) {
+        String msgSent = "ThreadID " + threadID + " Broadcasted: " + msg; //update threadID to username.
         serverGUI.addToMsgs(msgSent);
         System.out.println(msgSent);
         //serverGUI.addToMsgs("ThreadID "+threadID+" broadcasted: "+msg); //update threadID to username.
-        for(ConnectionThread ct : connections){ //send to every client (to every connection thread).
-           ct.Print("ThreadID " + threadID +" says: " + msg);
-       }
+        for (ConnectionThread ct : connections) { //send to every client (to every connection thread).
+            ct.Print("ThreadID " + threadID + " says: " + msg);
+        }
     }
 
     synchronized static void sendMsg(String msg, long threadID) { //update: optimize this, changes needed
-        String msgTo = msg.substring(0,msg.indexOf(':'));
+        String msgTo = msg.substring(0, msg.indexOf(':'));
         long msgToID = Long.parseLong(msgTo);
-        System.out.println("msgTo now equals: "+ msgTo);
-        for(ConnectionThread ct : connections){
-            if(ct.getId() == msgToID){
+        System.out.println("msgTo now equals: " + msgTo);
+        for (ConnectionThread ct : connections) {
+            if (ct.getId() == msgToID) {
                 System.out.println("Entered if");
-                ct.Print("From " + threadID+": " + msg.substring(msg.indexOf(':')+1));
+                ct.Print("From " + threadID + ": " + msg.substring(msg.indexOf(':') + 1));
             }
             //continue
         }
     }
 
-    synchronized static void removeConnection(long threadID){
-        for(ConnectionThread ct : connections){
-            if(ct.getId() == threadID){
+    synchronized static void removeConnection(long threadID) {
+        for (ConnectionThread ct : connections) {
+            if (ct.getId() == threadID) {
                 connections.remove(ct);
                 serverGUI.addToEvents(ct.getName() + " has disconnected");
                 break;
@@ -100,6 +101,7 @@ public class Server implements Runnable{
     /**
      * Going through all connection threads, and adding their names.
      * This method will be called when "show online" button is pressed.
+     *
      * @param threadID the threadID who called the function. (doesn't use it)
      * @return String, contains all users.
      */
@@ -109,13 +111,15 @@ public class Server implements Runnable{
 //        while(it.hasNext()){
 //            all
 //        }
-        for (ConnectionThread ct : connections){
-            allUsers += ct.getId() + ", ";
+        for (ConnectionThread ct : connections) {
+            allUsers += ct.getId() + ",";
         }
+        if (allUsers.length() > 0)
+            allUsers = allUsers.substring(0, allUsers.length() - 1);
         return allUsers;
     }
 
-     protected void stopServer(){
+    protected void stopServer() {
         connections = null; //Server is shutting down.
         serverGUI.toggleStartStopBtn(true); //update GUI start button text.
         this.keepGoing = false;
@@ -125,6 +129,10 @@ public class Server implements Runnable{
     public void run() {
         this.keepGoing = true;
         this.startServer();
+    }
+
+    public static ArrayList<ConnectionThread> getConnections() {
+        return connections;
     }
 
     /******** Private *********/
