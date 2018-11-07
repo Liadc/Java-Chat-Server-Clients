@@ -35,12 +35,15 @@ public class Server implements Runnable {
         while (keepGoing) {
             try {
                 serverGUI.addToEvents("Waiting for connections on port: " + this.port + "....");
-                Socket connection = server.accept();
-                ConnectionThread ct = new ConnectionThread(connection);
+                Socket connection = server.accept(); //Thread stays here, waiting for connections.
+                ConnectionThread ct = new ConnectionThread(connection,"temp"); //username will be changed once InputStream object is initiated and gets the request from client.
                 connections.add(ct);
                 ct.start();
-//                serverGUI.addToEvents("Server started on new Thread, listening on port " + this.port + "..."); //update: actual message has to be
-// something like "connection made with client, initiating new thread for the server, to keep listening..."
+                serverGUI.addToEvents("Connection made with new client, initiating new thread for this connection, we can keep listening...");
+                while (ct.getName() == "temp") {
+                    //do nothing, waiting for update. input stream is building up on another thread, let's wait for username update.
+                }
+                //username is now updated and sync in both server , connectionThread, and client.
                 serverGUI.addToEvents(ct.getName() + " has connected");
                 broadcastServEvents(ct.getName() + " has connected.");
 
@@ -66,17 +69,6 @@ public class Server implements Runnable {
                 ct.print("Server System says: " + msg);
             }
         }
-    }
-
-    //return true if succeeded.
-    synchronized static boolean setUsername(String username, long fromThreadID){
-        for(ConnectionThread ct : connections){
-            if(fromThreadID == ct.getId()){
-                ct.setName(username);
-                return true;
-            }
-        }
-        return false;
     }
 
     synchronized static void broadcastMsgs(String msg, long threadID) {

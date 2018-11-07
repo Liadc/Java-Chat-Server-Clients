@@ -11,9 +11,8 @@ public class ConnectionThread extends Thread {
     private BufferedReader reader;
     private PrintWriter writer;
     private boolean running = true;
-    private String tempUsername = this.getName(); //first initial name provided by thread.
 
-    public ConnectionThread(Socket sock) {
+    public ConnectionThread(Socket sock,String username) {
         this.mySocket = sock;
         try {
             this.reader = new BufferedReader(new InputStreamReader(sock.getInputStream()));
@@ -21,6 +20,7 @@ public class ConnectionThread extends Thread {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        this.setName(username); //updates name of thread to be the username.
     }
 
     @Override
@@ -58,7 +58,8 @@ public class ConnectionThread extends Thread {
             this.shutdown();
         } else if (str.startsWith("!4")) {//client asks to set his username.
             String username = str.substring(2);
-            if(this.getName()==tempUsername){ //if we haven't choose a name yet, we still have the name which the thread gave us initially.
+            this.setName(username);
+            if(this.getName()=="temp"){ //if we haven't choose a name yet, we still have the name which the Server gave us initially.
                 this.setName(username); //we can update our name, once.
             }else{ //if user already has a username.
                 writer.println("You already provided a username.");
@@ -66,7 +67,6 @@ public class ConnectionThread extends Thread {
         } else {
             Server.broadcastMsgs(str, getId());//normal messages send through broadcast.
         }
-
 }
 
     public void print(String str) {
