@@ -16,6 +16,7 @@
         </constraints>
         <properties>
           <text value=""/>
+          <toolTipText value="Enter port here, 1024-65553"/>
         </properties>
       </component>
       <component id="51786" class="javax.swing.JLabel" binding="portLabel">

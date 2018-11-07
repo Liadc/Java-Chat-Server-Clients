@@ -34,7 +34,7 @@ public class ServerGUI {
                 } catch (Exception ex) {
                     addToEvents("Bad port! Starting server on default port: 1337");
                 }
-                if (portInteger < 1000 || portInteger > 65553) {
+                if (portInteger < 1024 || portInteger > 65553) {
                     addToEvents("Bad port! Must be between 1001-65553. \nStarting server on default port: 1337");
                     portInteger = 1337;
                 }
@@ -90,7 +90,7 @@ public class ServerGUI {
         frame.setVisible(true); //showing the frame to the screen.
         frame.setMinimumSize(new Dimension(650,490));
         frame.setSize(700,500);
-        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE); //the default close for the frame, do nothing, because we will prompt a confirmation message. (in constructor).
         new ServerGUI(); //calls the constructor.
     }
 
