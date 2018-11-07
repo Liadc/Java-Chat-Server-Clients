@@ -49,7 +49,7 @@ public class ClientGUI {
                     addMsg("Invalid port provided. Must be an integer between 1024-65553");
                     return;
                 }
-                if(port<1024 || port >65553){
+                if(port<1024 || port >65553){ //only this range is valid.
                     addMsg("Invalid port provided. Must be an integer between 1024-65553");
                     return;
                 }
@@ -95,18 +95,15 @@ public class ClientGUI {
         }); //end actionListener for refreshButton.
 
         //actionListener for "Send Private Message" button.
-        sendPvtMsgBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (connectButton.getText().equals("Disconnect")) { //only if user is connected.
-                    //try to send private message here.
-                    String pvtMsg = "!1" + userPvtMsgName.getText()+":"+pvtMsgText.getText();
-                    client.sendMsg(pvtMsg);
-                    addMsg("Sending message to " +userPvtMsgName.getText()+":"+pvtMsgText.getText());
-                }
-                else{
-                    addMsg("You are disconnected, cannot send private message...");
-                }
+        sendPvtMsgBtn.addActionListener(e -> {
+            if (connectButton.getText().equals("Disconnect")) { //only if user is connected.
+                //try to send private message here.
+                String pvtMsg = "!1" + userPvtMsgName.getText()+":"+pvtMsgText.getText();
+                client.sendMsg(pvtMsg);
+                addMsg("Sending message to " +userPvtMsgName.getText()+":"+pvtMsgText.getText());
+            }
+            else{
+                addMsg("You are disconnected, cannot send private message...");
             }
         });
         //actionListener for "clearTextBtn"

@@ -24,7 +24,7 @@ public class Client implements Runnable {
         try { //trying to connect
             socket = new Socket(this.ip, this.port);
         } catch (IOException e) { //some error connecting, cannot even establish connection with socket.
-            clientGUI.addMsg("Cannot connect to server: please verify your input. \n" ); //connection refused.
+            clientGUI.addMsg("Cannot connect to server: connection refused. \nPlease check your input. The server might also be offline." ); //connection refused.
             clientGUI.getConnectBtn().setText("Connect");
             return; //kill current thread.
         }
@@ -54,13 +54,11 @@ public class Client implements Runnable {
         Thread listenServerThread = new Thread(listeningToServer);
         listenServerThread.start();
         //after connection made, listening to server, we can request new username for ourselves.
-        requestUsername(this.username); //update: work on this.
-
+        requestUsername(this.username);
     }
 
-    //update: add this function
     private void requestUsername(String username) {
-
+        sendMsg("!4"+username);
     }
 
     //a message "!2" indicates a request for all online users.

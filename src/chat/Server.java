@@ -68,6 +68,17 @@ public class Server implements Runnable {
         }
     }
 
+    //return true if succeeded.
+    synchronized static boolean setUsername(String username, long fromThreadID){
+        for(ConnectionThread ct : connections){
+            if(fromThreadID == ct.getId()){
+                ct.setName(username);
+                return true;
+            }
+        }
+        return false;
+    }
+
     synchronized static void broadcastMsgs(String msg, long threadID) {
         String msgSent = "ThreadID " + threadID + " Broadcasted: " + msg; //update threadID to username.
         serverGUI.addToMsgs(msgSent);
