@@ -2,6 +2,8 @@ package chat;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 
 public class ServerGUI {
@@ -67,12 +69,12 @@ public class ServerGUI {
     public static void main(String[] args) {
         JFrame frame = new JFrame("Server - Amazing Ex4 Chat App"); //new frame for our GUI
         frame.setContentPane(new ServerGUI().panel1); //set the pane for the frame as our JPanel from our form.
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //the default close for the frame, just exit.
         frame.pack(); //causes the window to be sized to fit the preferred size and layouts of its sub-components.
         frame.setMinimumSize(new Dimension(650,490));
         frame.setSize(700,500);
         frame.setVisible(true); //showing the frame to the screen.
-
+        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        ClientGUI.xButtonPressed(frame); //listener for the X button. will show a message. same listener for the ClientGUI, we made a static function.
 
         new ServerGUI(); //calls the constructor.
     }

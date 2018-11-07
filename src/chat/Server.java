@@ -121,8 +121,10 @@ public class Server implements Runnable {
 
     protected void stopServer() {
         connections = null; //Server is shutting down.
-        serverGUI.toggleStartStopBtn(true); //update GUI start button text.
-        this.keepGoing = false;
+        if(serverGUI!=null){
+            serverGUI.toggleStartStopBtn(true); //update GUI start/stop button text.
+        }
+        this.keepGoing = false; //shutdown this thread.
     }
 
     @Override

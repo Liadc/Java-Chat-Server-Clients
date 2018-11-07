@@ -1,6 +1,8 @@
 package chat;
 
 import javax.swing.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
@@ -44,11 +46,28 @@ public class ClientGUI {
 
         JFrame frame = new JFrame("Client - Amazing Ex4 Chat App"); //new frame for our GUI
         frame.setContentPane(new ClientGUI().mainPanel); //set the pane for the frame as our JPanel from our form.
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //the default close for the frame, just exit.
+//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //the default close for the frame, just exit.
         frame.pack(); //causes the window to be sized to fit the preferred size and layouts of its sub-components.
         frame.setVisible(true); //showing the frame to the screen.
+        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        xButtonPressed(frame); //listener for the X button. will show a message. ame listener for the ServerGUIs, we made a static function.
 
         new ClientGUI();
+    }
+
+    static void xButtonPressed(JFrame frame) {
+        frame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent we)
+            {
+                String ObjButtons[] = {"Yes","No"};
+                int PromptResult = JOptionPane.showOptionDialog(null,"Are you sure you want to exit? Liad & Timor will miss you.","Online Examination System",JOptionPane.DEFAULT_OPTION,JOptionPane.WARNING_MESSAGE,null,ObjButtons,ObjButtons[1]);
+                if(PromptResult==JOptionPane.YES_OPTION)
+                {
+                    System.exit(0);
+                }
+            }
+        });
     }
 
     /******* Private *********/
