@@ -1,4 +1,4 @@
-package timor;
+package chat;
 
 import javax.swing.*;
 import java.net.InetAddress;
@@ -34,9 +34,7 @@ public class ClientGUI {
         sendButton.addActionListener(e -> {
            sendMsg(msgField.getText());
         });
-        refreshButton.addActionListener(e -> {
-         client.requestOnline();
-        });
+        refreshButton.addActionListener(e -> client.requestOnline());
     }
     public void addMsg(String msg) {
         chatArea.append(msg + "\n");
