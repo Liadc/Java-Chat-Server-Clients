@@ -24,7 +24,7 @@ public class Client implements Runnable {
         try { //trying to connect
             socket = new Socket(this.ip, this.port);
         } catch (IOException e) { //some error connecting, cannot even establish connection with socket.
-            clientGUI.addMsg("Cannot connect to server: " + e);
+            clientGUI.addMsg("Cannot connect to server: please verify your input. \n" ); //connection refused.
             clientGUI.getConnectBtn().setText("Connect");
             return; //kill current thread.
         }

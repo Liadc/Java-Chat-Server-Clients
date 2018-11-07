@@ -38,19 +38,28 @@ public class ClientGUI {
                     addMsg("You must enter a username!");
                     return;
                 }
+                //lets check IP and PORT are valid.
+                try{
+                    ip = InetAddress.getByName(ipField.getText());
+                    port = Integer.parseInt(portField.getText()); //update: might fail, use try-catch.
+                } catch (UnknownHostException e1) {
+                    addMsg("Invalid IP provided. Unknown host.");
+                    return;
+                } catch (NumberFormatException e1){
+                    addMsg("Invalid port provided. Must be an integer between 1024-65553");
+                    return;
+                }
+                if(port<1024 || port >65553){
+                    addMsg("Invalid port provided. Must be an integer between 1024-65553");
+                    return;
+                }
 
-            try {
-                ip = InetAddress.getByName(ipField.getText()); //update: might fail, use try-catch.
-                port = Integer.parseInt(portField.getText()); //update: might fail, use try-catch.
+                //we can now try to connect on another Thread.
                 client = new Client(ip, port, this,usernameTextField.getText());
                 Thread clientThread = new Thread(client);
                 clientThread.start();
                 connectButton.setText("Disconnect");
-            } catch (UnknownHostException e1) { //update to meaningful error and change gui accordingly.
-                e1.printStackTrace();
-                connectButton.setText("Connect");
-                return;
-            }
+
         }else{
                 try {
                     client.closeConnection();
