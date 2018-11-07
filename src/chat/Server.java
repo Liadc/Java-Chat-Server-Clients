@@ -61,8 +61,10 @@ public class Server implements Runnable {
      */
     synchronized static void broadcastServEvents(String msg) {
         System.out.println("event occured, broadcasting this event: " + msg);
-        for (ConnectionThread ct : connections) { //send to every client (to every connection thread).
-            ct.print("Server System says: " + msg);
+        if(connections!=null || connections.size()!=0) {
+            for (ConnectionThread ct : connections) { //send to every client (to every connection thread).
+                ct.print("Server System says: " + msg);
+            }
         }
     }
 
@@ -77,25 +79,35 @@ public class Server implements Runnable {
     }
 
     //to private message between clients.
-    synchronized static void sendMsg(String msg, long threadID) { //update: optimize this, changes needed
+    synchronized static void sendPvtMsg(String msg, long fromThreadID) { //update: optimize this, changes needed
+        boolean foundTargetUser = false; //indicate if we found target user.
         String msgTo = msg.substring(0, msg.indexOf(':'));
-        long msgToID = Long.parseLong(msgTo);
-        System.out.println("msgTo now equals: " + msgTo);
+        long msgToID = Long.parseLong(msgTo); //update: this should be the username, stays string. no casting.
         for (ConnectionThread ct : connections) {
-            if (ct.getId() == msgToID) {
-                System.out.println("Entered if");
-                ct.print("From " + threadID + ": " + msg.substring(msg.indexOf(':') + 1));
+            if (ct.getId() == msgToID) { //found the userID.
+                String pureMsg = msg.substring(msg.indexOf(':') + 1); //pure message is the text data in the message.
+                ct.print("From " + fromThreadID + ": " + pureMsg);
+                serverGUI.addToMsgs("User: " +fromThreadID +" sent a private message to "+ msgToID+": "+pureMsg); //just so the server knows about this.
+                foundTargetUser = true;
+                break; //end searching for userID.
             }
-            //continue
+        }
+        if(!foundTargetUser){ //target user cannot be found, lets notify sender.
+            for(ConnectionThread ct : connections){
+                if(ct.getId() == fromThreadID){
+                    ct.print("User: "+msgToID+" cannot be found on the server. He is already offline or you have a typo in his username.");
+                }
+            }
         }
     }
 
     synchronized static void removeConnection(long threadID) {
+        serverGUI.addToEvents(threadID + " asked to disconnect.");
         for (ConnectionThread ct : connections) {
             if (ct.getId() == threadID) {
+                broadcastServEvents(ct.getId() + " has disconnected.");
                 connections.remove(ct);
-                serverGUI.addToEvents(ct.getName() + " asked to disconnect.");
-                broadcastServEvents(ct.getName() + " has disconnected.");
+                serverGUI.addToEvents(threadID + " has disconnected.");
                 break;
             }
         }
@@ -136,7 +148,7 @@ public class Server implements Runnable {
         this.startServer();
     }
 
-    public static ArrayList<ConnectionThread> getConnections() {
+    static ArrayList<ConnectionThread> getConnections() {
         return connections;
     }
 

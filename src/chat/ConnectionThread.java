@@ -50,8 +50,8 @@ public class ConnectionThread extends Thread {
     // nothing entered  indicates the client wants to broadcast to everyone.
     private void HandleMsg(String str) {
         if (str.startsWith("!1")) { //private message another client
-            System.out.println("Sending request from thread to Server, im asking to privateMessage");
-            Server.sendMsg(str.substring(1), getId());
+            System.out.println("Sending request from thread to Server, client asking to privateMessage"); //update: delete this.
+            Server.sendPvtMsg(str.substring(2), getId());
         } else if (str.startsWith("!2")) {//to get all users online, type !2
             writer.println("!2" + Server.getUsersOnline(getId()));
         } else if (str.startsWith("!3")) {//client asks to disconnect.

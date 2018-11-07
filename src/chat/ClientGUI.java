@@ -19,7 +19,7 @@ public class ClientGUI {
             public void windowClosing(WindowEvent we)
             {
                 String ObjButtons[] = {"Yes","No"};
-                int PromptResult = JOptionPane.showOptionDialog(null,"Are you sure you want to exit? Liad & Timor will miss you.","Online Examination System",JOptionPane.DEFAULT_OPTION,JOptionPane.WARNING_MESSAGE,null,ObjButtons,ObjButtons[1]);
+                int PromptResult = JOptionPane.showOptionDialog(null,"Are you sure you want to exit? Liad & Timor will miss you.","Leaving Ex4 Amazing Chat?",JOptionPane.DEFAULT_OPTION,JOptionPane.WARNING_MESSAGE,null,ObjButtons,ObjButtons[1]);
                 if(PromptResult==JOptionPane.YES_OPTION)
                 {
                     if (connectButton.getText().equals("Disconnect")) { //this indicates the client is connected at this moment.
@@ -83,6 +83,9 @@ public class ClientGUI {
             public void actionPerformed(ActionEvent e) {
                 if (connectButton.getText().equals("Disconnect")) { //only if user is connected.
                     //try to send private message here.
+                    String pvtMsg = "!1" + userPvtMsgName.getText()+":"+pvtMsgText.getText();
+                    client.sendMsg(pvtMsg);
+                    addMsg("Sending message to " +userPvtMsgName.getText()+":"+pvtMsgText.getText());
                 }
                 else{
                     addMsg("You are disconnected, cannot send private message...");
