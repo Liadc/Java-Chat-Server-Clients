@@ -107,12 +107,7 @@ public class ClientGUI {
             }
         });
         //actionListener for "clearTextBtn"
-        clearTextBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                chatArea.setText("");
-            }
-        });
+        clearTextBtn.addActionListener(e -> chatArea.setText(""));
     }
 
     void addMsg(String msg) {

@@ -40,12 +40,12 @@ public class Server implements Runnable {
                 connections.add(ct);
                 ct.start();
                 serverGUI.addToEvents("Connection made with new client, initiating new thread for this connection, we can keep listening...");
-                while (ct.getName() == "temp") {
+                while (ct.getName() == "temp" && ct.isAlive()) {
+                    System.out.println("Still temp");
                     //do nothing, waiting for update. input stream is building up on another thread, let's wait for username update.
                 }
                 //username is now updated and sync in both server , connectionThread, and client.
                 serverGUI.addToEvents(ct.getName() + " has connected");
-                broadcastServEvents(ct.getName() + " has connected.");
 
             } catch (IOException e) {
                 System.out.println("Error with IO");
@@ -64,11 +64,15 @@ public class Server implements Runnable {
      */
     synchronized static void broadcastServEvents(String msg) {
         System.out.println("event occured, broadcasting this event: " + msg);
-        if(connections!=null || connections.size()!=0) {
-            for (ConnectionThread ct : connections) { //send to every client (to every connection thread).
-                ct.print("Server System says: " + msg);
+        try {
+            if (connections != null || connections.size() != 0) {
+                for (ConnectionThread ct : connections) { //send to every client (to every connection thread).
+                    if (msg == "!3") { //client asked to disconnect.
+                        ct.print(msg);
+                    } else ct.print("Server System says: " + msg);
+                }
             }
-        }
+        }catch (Exception e){}//nothing we can do.
     }
 
     synchronized static void broadcastMsgs(String msg, long threadID) {
@@ -106,12 +110,27 @@ public class Server implements Runnable {
 
     synchronized static void removeConnection(long threadID) {
         serverGUI.addToEvents(threadID + " asked to disconnect.");
-        for (ConnectionThread ct : connections) {
-            if (ct.getId() == threadID) {
-                broadcastServEvents(ct.getId() + " has disconnected.");
-                connections.remove(ct);
-                serverGUI.addToEvents(threadID + " has disconnected.");
-                break;
+        if(connections != null) {
+            for (ConnectionThread ct : connections) {
+                if (ct.getId() == threadID) {
+                    broadcastServEvents(ct.getId() + " has disconnected.");
+                    connections.remove(ct);
+                    serverGUI.addToEvents(threadID + " has disconnected.");
+                    break;
+                }
+            }
+        }
+    }
+
+    synchronized static void silentRemoveConnection(long threadID) {
+        serverGUI.addToEvents(threadID + " will disconnect silently, no broadcasting.");
+        if(connections != null) {
+            for (ConnectionThread ct : connections) {
+                if (ct.getId() == threadID) {
+                    connections.remove(ct);
+                    serverGUI.addToEvents(threadID + " has disconnected.");
+                    break;
+                }
             }
         }
     }
@@ -125,10 +144,6 @@ public class Server implements Runnable {
      */
     static String getUsersOnline(long threadID) {
         String allUsers = "";
-//        Iterator<ConnectionThread> it = connections.iterator();
-//        while(it.hasNext()){
-//            all
-//        }
         for (ConnectionThread ct : connections) {
             allUsers += ct.getId() + ",";
         }
@@ -138,11 +153,14 @@ public class Server implements Runnable {
     }
 
     protected void stopServer() {
-        connections = null; //Server is shutting down.
-        if(serverGUI!=null){
+        try {
+            broadcastServEvents("!3"); //telling all clients we are shutting down.
+        }catch (Exception e){} //nothing we can do. actually can't send because we stopped server maybe before even connected with clients.
+        this.keepGoing = false; //shutdown this thread.
+        connections=null;
+        if (serverGUI != null) {
             serverGUI.toggleStartStopBtn(true); //update GUI start/stop button text.
         }
-        this.keepGoing = false; //shutdown this thread.
     }
 
     @Override
