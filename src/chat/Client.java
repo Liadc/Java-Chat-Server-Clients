@@ -38,7 +38,7 @@ public class Client implements Runnable {
         //we can now listen to the server, on another thread (so we don't block this thread!).
         Runnable listeningToServer = () -> {
             String line;
-            while (true) {
+            while (keepGoing) {
                 try {
                     line = reader.readLine();
                     if (line != null) {
@@ -92,6 +92,7 @@ public class Client implements Runnable {
         } catch (Exception e) {
             clientGUI.addMsg("Error with closing socket!");
         }
+        clientGUI.getConnectBtn().setText("Connect");
     }
 
     //Private
@@ -115,7 +116,7 @@ public class Client implements Runnable {
      *
      */
     private void handleMsg(String line) {
-        if (line.startsWith("!2")) {
+        if (line.startsWith("!2")) { //all online users
             if (line.length()<3){
             }else {
                 line = line.substring(2);
@@ -124,7 +125,14 @@ public class Client implements Runnable {
                 model.addAll(Arrays.asList(onlines));
                 clientGUI.setListModel(model);
             }
-        } else {
+        } else if (line.startsWith("!3")) {//server telling us he is shutting down.
+            closeConnection();
+            keepGoing = false;
+            clientGUI.addMsg("Server is shutting down, you are disconnected.");
+        }else if(line.startsWith("!9")){ //server telling us to pick different username.
+            closeConnection();
+            clientGUI.addMsg(line.substring(2));
+        }else{
             clientGUI.addMsg(line);
         }
     }

@@ -33,8 +33,8 @@ public class ConnectionThread extends Thread {
                 if (line != null)
                     HandleMsg(line);
                 else {
-                    System.out.println("ConnectionThread " + this.getId() + " entered NULL, killing this thread."); //just to indicate ourselves in console.
-                    shutdown();
+                    System.out.println("ConnectionThread " + this.getId() + " entered NULL, killing this thread."); //update: just to indicate ourselves in console. delete this
+                    shutdown(false);
                 }
             } catch (Exception e) {
                 System.out.println("Some exception in ConnectionThread: " + this.getId());
@@ -55,13 +55,27 @@ public class ConnectionThread extends Thread {
         } else if (str.startsWith("!2")) {//to get all users online, type !2
             writer.println("!2" + Server.getUsersOnline(getId()));
         } else if (str.startsWith("!3")) {//client asks to disconnect.
-            this.shutdown();
+            this.shutdown(false);
         } else if (str.startsWith("!4")) {//client asks to set his username.
             String username = str.substring(2);
-            this.setName(username);
             if(this.getName()=="temp"){ //if we haven't choose a name yet, we still have the name which the Server gave us initially.
+                boolean sameName = false;
+                for(ConnectionThread ct : Server.getConnections()){
+                    if(ct.getName().equals(username)){
+                        print("!9Server: username already in use. try a different name."); //!9 indicates to pick different username.
+                        System.out.println("Found some1 same name");
+                        sameName = true;
+                        shutdown(true); //no broadcasting for disconnecting this user.
+                        break;
+                    }
+                }
                 this.setName(username); //we can update our name, once.
+                //we can now broadcast connection.
+                if(!sameName)
+                Server.broadcastServEvents(this.getName() + " has connected.");
+
             }else{ //if user already has a username.
+                System.out.println("Already provided username!");
                 writer.println("You already provided a username.");
             }
         } else {
@@ -73,8 +87,34 @@ public class ConnectionThread extends Thread {
         writer.println(str);
     }
 
-    public void shutdown() {
-        Server.removeConnection(this.getId());
+    public void shutdown(boolean silentShutdown) {
         running = false;
+        try {
+            if (writer != null) {
+                writer.close();
+            }
+        } catch (Exception e) {
+            System.out.println("Error with closing current outputStream -> writer");
+        }
+        try {
+            if (reader != null) {
+                reader.close();
+            }
+        } catch (Exception e) {
+            System.out.println("Error with closing current inputStream -> reader");
+        }
+        try {
+            if (mySocket != null) {
+                mySocket.close();
+            }
+        } catch (Exception e) {
+            System.out.println("Error with closing socket!");
+        }
+        if(silentShutdown){
+            Server.silentRemoveConnection(this.getId());
+        }
+        else{
+            Server.removeConnection(this.getId());
+        }
     }
 }
