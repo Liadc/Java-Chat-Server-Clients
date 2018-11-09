@@ -57,6 +57,7 @@ public class Client implements Runnable {
         requestUsername(this.username);
     }
 
+    //sends message to Server, asking to update his username.
     private void requestUsername(String username) {
         sendMsg("!4"+username);
     }
