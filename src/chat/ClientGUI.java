@@ -28,8 +28,6 @@ public class ClientGUI {
             }
         });
 
-        frame.getRootPane().setDefaultButton(sendAllButton);
-
         //actionListener for Connect/Disconnect button.
         connectButton.addActionListener(e -> {
             if (connectButton.getText().equals("Connect")){

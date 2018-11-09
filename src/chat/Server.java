@@ -40,7 +40,7 @@ public class Server implements Runnable {
                 connections.add(ct);
                 ct.start();
                 serverGUI.addToEvents("Connection made with new client, initiating new thread for this connection, we can keep listening...");
-                while (ct.getName() == "temp" && ct.isAlive()) {
+                while (ct.getName().equals("temp") && ct.isAlive()) {
                     System.out.println("Still temp");
                     //do nothing, waiting for update. input stream is building up on another thread, let's wait for username update.
                 }
@@ -65,9 +65,9 @@ public class Server implements Runnable {
     synchronized static void broadcastServEvents(String msg) {
         System.out.println("event occured, broadcasting this event: " + msg);
         try {
-            if (connections != null || connections.size() != 0) {
+            if (connections != null && connections.size() != 0) {
                 for (ConnectionThread ct : connections) { //send to every client (to every connection thread).
-                    if (msg == "!3") { //client asked to disconnect.
+                    if (msg.equals("!3")) { //client asked to disconnect.
                         ct.print(msg);
                     } else ct.print("Server System says: " + msg);
                 }
@@ -101,7 +101,7 @@ public class Server implements Runnable {
         }
         if(!foundTargetUser){ //target user cannot be found, lets notify sender.
             for(ConnectionThread ct : connections){
-                if(ct.getName() == fromThreadUsername){
+                if(ct.getName().equals(fromThreadUsername)){
                     ct.print("User: "+msgTo+" cannot be found on the server. He is already offline or you have a typo in his username.");
                 }
             }
@@ -112,7 +112,7 @@ public class Server implements Runnable {
         serverGUI.addToEvents(userName + " asked to disconnect.");
         if(connections != null) {
             for (ConnectionThread ct : connections) {
-                if (ct.getName() == userName) {
+                if (ct.getName().equals(userName)) {
                     broadcastServEvents(ct.getName() + " has disconnected.");
                     connections.remove(ct);
                     serverGUI.addToEvents(userName + " has disconnected.");
@@ -141,16 +141,16 @@ public class Server implements Runnable {
      * @return String, contains all users.
      */
     static String getUsersOnline() {
-        String allUsers = "";
+        StringBuilder allUsers = new StringBuilder();
         for (ConnectionThread ct : connections) {
-            allUsers += ct.getName() + ",";
+            allUsers.append(ct.getName()).append(",");
         }
         if (allUsers.length() > 0)
-            allUsers = allUsers.substring(0, allUsers.length() - 1);
-        return allUsers;
+            allUsers = new StringBuilder(allUsers.substring(0, allUsers.length() - 1));
+        return allUsers.toString();
     }
 
-    protected void stopServer() {
+    void stopServer() {
         try {
             broadcastServEvents("!3"); //telling all clients we are shutting down.
         }catch (Exception e){} //nothing we can do. actually can't send because we stopped server maybe before even connected with clients.
