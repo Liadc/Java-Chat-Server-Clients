@@ -2,8 +2,6 @@ package chat;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.net.InetAddress;
@@ -12,7 +10,7 @@ import java.net.UnknownHostException;
 public class ClientGUI {
 
 
-    public ClientGUI() {
+    private ClientGUI() {
         //actionListener for red X Jframe close button.
         frame.addWindowListener(new WindowAdapter() {
             @Override
@@ -141,6 +139,8 @@ public class ClientGUI {
     private void sendMsg(String msg) {
         client.sendMsg(msg);
     }
+
+
     private static JFrame frame;
     private Client client;
     private int port;

@@ -1,18 +1,16 @@
 package chat;
 
-import javax.print.DocFlavor;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 
 public class ServerGUI {
 
 
-    ServerGUI() { //constructor.
+    private ServerGUI() { //constructor.
         //actionListener for red X button to close window.
         frame.addWindowListener(new WindowAdapter() {
             @Override

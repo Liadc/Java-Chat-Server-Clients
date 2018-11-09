@@ -12,7 +12,7 @@ public class ConnectionThread extends Thread {
     private PrintWriter writer;
     private boolean running = true;
 
-    public ConnectionThread(Socket sock,String username) {
+    ConnectionThread(Socket sock, String username) {
         this.mySocket = sock;
         try {
             this.reader = new BufferedReader(new InputStreamReader(sock.getInputStream()));
@@ -26,7 +26,7 @@ public class ConnectionThread extends Thread {
     @Override
     public void run() {
         System.out.println("Starting thread...");
-        String line = null;
+        String line;
         while (running) {
             try {
                 line = reader.readLine();
@@ -59,7 +59,7 @@ public class ConnectionThread extends Thread {
             this.shutdown(false);
         } else if (str.startsWith("!4")) {//client asks to set his username.
             String username = str.substring(2);
-            if(this.getName()=="temp"){ //if we haven't choose a name yet, we still have the name which the Server gave us initially.
+            if(this.getName().equals("temp")){ //if we haven't choose a name yet, we still have the name which the Server gave us initially.
                 boolean sameName = false;
                 for(ConnectionThread ct : Server.getConnections()){
                     if(ct.getName().equals(username)){
@@ -82,16 +82,13 @@ public class ConnectionThread extends Thread {
         } else if (str.startsWith("!5")){
             Server.broadcastMsgs(str.substring(2), getName());//normal messages send through broadcast.
         }
-        else {
-            //nothing, not possible.
-        }
-}
+    }
 
-    public void print(String str) {
+    void print(String str) {
         writer.println(str);
     }
 
-    public void shutdown(boolean silentShutdown) {
+    private void shutdown(boolean silentShutdown) {
         running = false;
         try {
             if (writer != null) {
