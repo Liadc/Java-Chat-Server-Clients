@@ -94,6 +94,7 @@
         </constraints>
         <properties>
           <model/>
+          <toolTipText value="Currently online users. You can hit refresh."/>
         </properties>
       </component>
       <component id="5ef76" class="javax.swing.JButton" binding="connectButton" default-binding="true">
@@ -196,6 +197,7 @@
         </constraints>
         <properties>
           <text value="Clear Chat"/>
+          <toolTipText value="Clears text from chat area."/>
         </properties>
       </component>
       <component id="d5a07" class="javax.swing.JLabel" binding="usernameLabel">
