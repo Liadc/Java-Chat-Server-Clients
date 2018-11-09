@@ -76,7 +76,7 @@ public class Server implements Runnable {
     }
 
     synchronized static void broadcastMsgs(String msg, String fromThreadName) {
-        String msgSent = "Thread-Username " + fromThreadName + " broadcasted: " + msg; //update threadID to username.
+        String msgSent = "Username " + fromThreadName + " broadcasted: " + msg; //update threadID to username.
         serverGUI.addToMsgs(msgSent);
         System.out.println(msgSent);
         for (ConnectionThread ct : connections) { //send to every client (to every connection thread).
