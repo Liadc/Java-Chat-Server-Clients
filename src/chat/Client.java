@@ -11,7 +11,7 @@ import java.util.Arrays;
 
 public class Client implements Runnable {
 
-    public Client(InetAddress host, int port, ClientGUI gui, String username) {
+    Client(InetAddress host, int port, ClientGUI gui, String username) {
         this.ip = host;
         this.port = port;
         this.clientGUI = gui;
@@ -118,14 +118,11 @@ public class Client implements Runnable {
      */
     private void handleMsg(String line) {
         if (line.startsWith("!2")) { //all online users
-            if (line.length()<3){
-            }else {
                 line = line.substring(2);
                 String[] onlines = line.split(",");
                 DefaultListModel model = new DefaultListModel();
                 model.addAll(Arrays.asList(onlines));
                 clientGUI.setListModel(model);
-            }
         } else if (line.startsWith("!3")) {//server telling us he is shutting down.
             closeConnection();
             keepGoing = false;
