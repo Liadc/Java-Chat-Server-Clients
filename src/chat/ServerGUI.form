@@ -33,6 +33,7 @@
         </constraints>
         <properties>
           <text value="Start Server"/>
+          <toolTipText value="Start/Stop server."/>
         </properties>
       </component>
       <component id="d5148" class="javax.swing.JLabel" binding="chatTitle">
@@ -73,6 +74,7 @@
         </constraints>
         <properties>
           <text value="Refresh"/>
+          <toolTipText value="Refreshes online users."/>
         </properties>
       </component>
       <scrollpane id="94071" binding="chatScroll">
