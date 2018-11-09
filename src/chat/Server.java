@@ -75,47 +75,47 @@ public class Server implements Runnable {
         }catch (Exception e){}//nothing we can do.
     }
 
-    synchronized static void broadcastMsgs(String msg, long threadID) {
-        String msgSent = "ThreadID " + threadID + " Broadcasted: " + msg; //update threadID to username.
+    synchronized static void broadcastMsgs(String msg, String fromThreadName) {
+        String msgSent = "Thread-Username " + fromThreadName + " broadcasted: " + msg; //update threadID to username.
         serverGUI.addToMsgs(msgSent);
         System.out.println(msgSent);
-        //serverGUI.addToMsgs("ThreadID "+threadID+" broadcasted: "+msg); //update threadID to username.
         for (ConnectionThread ct : connections) { //send to every client (to every connection thread).
-            ct.print("ThreadID " + threadID + " says: " + msg);
+            ct.print("Username " + fromThreadName + " says: " + msg);
         }
     }
 
     //to private message between clients.
-    synchronized static void sendPvtMsg(String msg, long fromThreadID) { //update: optimize this, changes needed
+    synchronized static void sendPvtMsg(String msg, String fromThreadUsername) { //update: optimize this, changes needed
         boolean foundTargetUser = false; //indicate if we found target user.
         String msgTo = msg.substring(0, msg.indexOf(':'));
-        long msgToID = Long.parseLong(msgTo); //update: this should be the username, stays string. no casting.
+        System.out.println("msgTo now equals: " + msgTo);
         for (ConnectionThread ct : connections) {
-            if (ct.getId() == msgToID) { //found the userID.
+            if (ct.getName().equals(msgTo)) { //found the userID. changed to userName.
+                System.out.println("Found username.!!");
                 String pureMsg = msg.substring(msg.indexOf(':') + 1); //pure message is the text data in the message.
-                ct.print("From " + fromThreadID + ": " + pureMsg);
-                serverGUI.addToMsgs("User: " +fromThreadID +" sent a private message to "+ msgToID+": "+pureMsg); //just so the server knows about this.
+                ct.print("From " + fromThreadUsername + ": " + pureMsg);
+                serverGUI.addToMsgs("User: " +fromThreadUsername +" sent a private message to "+ msgTo+": "+pureMsg); //just so the server knows about this.
                 foundTargetUser = true;
                 break; //end searching for userID.
             }
         }
         if(!foundTargetUser){ //target user cannot be found, lets notify sender.
             for(ConnectionThread ct : connections){
-                if(ct.getId() == fromThreadID){
-                    ct.print("User: "+msgToID+" cannot be found on the server. He is already offline or you have a typo in his username.");
+                if(ct.getName() == fromThreadUsername){
+                    ct.print("User: "+msgTo+" cannot be found on the server. He is already offline or you have a typo in his username.");
                 }
             }
         }
     }
 
-    synchronized static void removeConnection(long threadID) {
-        serverGUI.addToEvents(threadID + " asked to disconnect.");
+    synchronized static void removeConnection(String userName) {
+        serverGUI.addToEvents(userName + " asked to disconnect.");
         if(connections != null) {
             for (ConnectionThread ct : connections) {
-                if (ct.getId() == threadID) {
-                    broadcastServEvents(ct.getId() + " has disconnected.");
+                if (ct.getName() == userName) {
+                    broadcastServEvents(ct.getName() + " has disconnected.");
                     connections.remove(ct);
-                    serverGUI.addToEvents(threadID + " has disconnected.");
+                    serverGUI.addToEvents(userName + " has disconnected.");
                     break;
                 }
             }
@@ -128,7 +128,7 @@ public class Server implements Runnable {
             for (ConnectionThread ct : connections) {
                 if (ct.getId() == threadID) {
                     connections.remove(ct);
-                    serverGUI.addToEvents(threadID + " has disconnected.");
+                    serverGUI.addToEvents("ThreadID: " + threadID + " has disconnected silently. No broadcasting.");
                     break;
                 }
             }
@@ -138,14 +138,12 @@ public class Server implements Runnable {
     /**
      * Going through all connection threads, and adding their names.
      * This method will be called when "show online" button is pressed.
-     *
-     * @param threadID the threadID who called the function. (doesn't use it)
      * @return String, contains all users.
      */
-    static String getUsersOnline(long threadID) {
+    static String getUsersOnline() {
         String allUsers = "";
         for (ConnectionThread ct : connections) {
-            allUsers += ct.getId() + ",";
+            allUsers += ct.getName() + ",";
         }
         if (allUsers.length() > 0)
             allUsers = allUsers.substring(0, allUsers.length() - 1);

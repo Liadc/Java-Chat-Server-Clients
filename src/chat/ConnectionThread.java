@@ -33,11 +33,11 @@ public class ConnectionThread extends Thread {
                 if (line != null)
                     HandleMsg(line);
                 else {
-                    System.out.println("ConnectionThread " + this.getId() + " entered NULL, killing this thread."); //update: just to indicate ourselves in console. delete this
+                    System.out.println("ConnectionThread " + this.getId() + "(username: "+this.getName()+ ") entered NULL, killing this thread."); //update: just to indicate ourselves in console. delete this
                     shutdown(false);
                 }
             } catch (Exception e) {
-                System.out.println("Some exception in ConnectionThread: " + this.getId());
+                System.out.println("Some exception in ConnectionThread: " + this.getId() +" . On username: "+this.getName());
                 e.printStackTrace();
             }
         }
@@ -51,9 +51,9 @@ public class ConnectionThread extends Thread {
     private void HandleMsg(String str) {
         if (str.startsWith("!1")) { //private message another client
             System.out.println("Sending request from thread to Server, client asking to privateMessage"); //update: delete this.
-            Server.sendPvtMsg(str.substring(2), getId());
+            Server.sendPvtMsg(str.substring(2), getName());
         } else if (str.startsWith("!2")) {//to get all users online, type !2
-            writer.println("!2" + Server.getUsersOnline(getId()));
+            writer.println("!2" + Server.getUsersOnline());
         } else if (str.startsWith("!3")) {//client asks to disconnect.
             this.shutdown(false);
         } else if (str.startsWith("!4")) {//client asks to set his username.
@@ -79,7 +79,7 @@ public class ConnectionThread extends Thread {
                 writer.println("You already provided a username.");
             }
         } else {
-            Server.broadcastMsgs(str, getId());//normal messages send through broadcast.
+            Server.broadcastMsgs(str, getName());//normal messages send through broadcast.
         }
 }
 
@@ -114,7 +114,7 @@ public class ConnectionThread extends Thread {
             Server.silentRemoveConnection(this.getId());
         }
         else{
-            Server.removeConnection(this.getId());
+            Server.removeConnection(this.getName());
         }
     }
 }

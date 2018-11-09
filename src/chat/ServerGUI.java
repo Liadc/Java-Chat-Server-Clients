@@ -1,9 +1,12 @@
 package chat;
 
+import javax.print.DocFlavor;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 
 
 public class ServerGUI {
@@ -53,7 +56,12 @@ public class ServerGUI {
         // refresh button is pressed.
         refreshButton.addActionListener(e -> {
             DefaultListModel model = new DefaultListModel();
-            model.addAll(Server.getConnections());
+            ArrayList<ConnectionThread> connections = Server.getConnections();
+            ArrayList<String> usernames = new ArrayList<>(connections.size());
+            for(ConnectionThread ct : connections){
+                usernames.add(ct.getName());
+            }
+            model.addAll(usernames);
             onlineUsers.setModel(model);
             onlineUsers.setVisible(true);
         });
