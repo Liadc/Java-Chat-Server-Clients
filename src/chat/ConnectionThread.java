@@ -47,6 +47,7 @@ public class ConnectionThread extends Thread {
     // !2  indicates the client want to get all online users.
     // !3  indicates the client wants to disconnect.
     // !4  indicates the client asks to save his name.
+    // !5  indicates the clients wants to broadcast.
     // nothing entered  indicates the client wants to broadcast to everyone.
     private void HandleMsg(String str) {
         if (str.startsWith("!1")) { //private message another client
@@ -78,8 +79,11 @@ public class ConnectionThread extends Thread {
                 System.out.println("Already provided username!");
                 writer.println("You already provided a username.");
             }
-        } else {
-            Server.broadcastMsgs(str, getName());//normal messages send through broadcast.
+        } else if (str.startsWith("!5")){
+            Server.broadcastMsgs(str.substring(2), getName());//normal messages send through broadcast.
+        }
+        else {
+            //nothing, not possible.
         }
 }
 

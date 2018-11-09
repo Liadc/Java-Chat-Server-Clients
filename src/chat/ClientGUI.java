@@ -72,10 +72,10 @@ public class ClientGUI {
 
         }); //end actionListener for connect/disconnect button.
 
-        //actionListener for "Send" button.
+        //actionListener for "Send" button. for broadcasting.
         sendAllButton.addActionListener(e -> {
             if(connectButton.getText().equals("Disconnect")){ //indicates client is connected.
-                sendMsg(msgField.getText());
+                sendMsg("!5"+msgField.getText());
             }
             else{
                 addMsg("You are disconnected, cannot send message...");
@@ -105,6 +105,7 @@ public class ClientGUI {
             else{
                 addMsg("You are disconnected, cannot send private message...");
             }
+            pvtMsgText.setText("");
         });
         //actionListener for "clearTextBtn"
         clearTextBtn.addActionListener(e -> chatArea.setText(""));
@@ -126,9 +127,8 @@ public class ClientGUI {
     }
 
 
-    public void setListModel(DefaultListModel _model) {
-        DefaultListModel model = _model;
-        connectedUsers.setModel(model);
+    void setListModel(DefaultListModel _model) {
+        connectedUsers.setModel(_model);
         connectedUsers.setVisible(true);
     }
 
