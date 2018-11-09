@@ -75,7 +75,7 @@ public class ClientGUI {
         //actionListener for "Send" button. for broadcasting.
         sendAllButton.addActionListener(e -> {
             if(connectButton.getText().equals("Disconnect")){ //indicates client is connected.
-                sendMsg(msgField.getText());
+                sendMsg("!5"+msgField.getText());
             }
             else{
                 addMsg("You are disconnected, cannot send message...");
