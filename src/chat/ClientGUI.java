@@ -98,9 +98,9 @@ public class ClientGUI {
         sendPvtMsgBtn.addActionListener(e -> {
             if (connectButton.getText().equals("Disconnect")) { //only if user is connected.
                 //try to send private message here.
-                String pvtMsg = "!1" + userPvtMsgName.getText()+":"+pvtMsgText.getText();
+                String pvtMsg = "!1" + userPvtMsgName.getText()+":"+pvtMsgText.getText(); //pvtMsg form: !1nameToSend:MSG
                 client.sendMsg(pvtMsg);
-                addMsg("Sending message to " +userPvtMsgName.getText()+":"+pvtMsgText.getText());
+                addMsg("Sending message to " +userPvtMsgName.getText()+": "+pvtMsgText.getText());
             }
             else{
                 addMsg("You are disconnected, cannot send private message...");

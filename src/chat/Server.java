@@ -88,8 +88,10 @@ public class Server implements Runnable {
     synchronized static void sendPvtMsg(String msg, String fromThreadUsername) { //update: optimize this, changes needed
         boolean foundTargetUser = false; //indicate if we found target user.
         String msgTo = msg.substring(0, msg.indexOf(':'));
+        System.out.println("msgTo now equals: " + msgTo);
         for (ConnectionThread ct : connections) {
-            if (ct.getName() == msgTo) { //found the userID. changed to userName.
+            if (ct.getName().equals(msgTo)) { //found the userID. changed to userName.
+                System.out.println("Found username.!!");
                 String pureMsg = msg.substring(msg.indexOf(':') + 1); //pure message is the text data in the message.
                 ct.print("From " + fromThreadUsername + ": " + pureMsg);
                 serverGUI.addToMsgs("User: " +fromThreadUsername +" sent a private message to "+ msgTo+": "+pureMsg); //just so the server knows about this.
@@ -106,14 +108,14 @@ public class Server implements Runnable {
         }
     }
 
-    synchronized static void removeConnection(long threadID) {
-        serverGUI.addToEvents(threadID + " asked to disconnect.");
+    synchronized static void removeConnection(String userName) {
+        serverGUI.addToEvents(userName + " asked to disconnect.");
         if(connections != null) {
             for (ConnectionThread ct : connections) {
-                if (ct.getId() == threadID) {
-                    broadcastServEvents(ct.getId() + " has disconnected.");
+                if (ct.getName() == userName) {
+                    broadcastServEvents(ct.getName() + " has disconnected.");
                     connections.remove(ct);
-                    serverGUI.addToEvents(threadID + " has disconnected.");
+                    serverGUI.addToEvents(userName + " has disconnected.");
                     break;
                 }
             }
@@ -126,7 +128,7 @@ public class Server implements Runnable {
             for (ConnectionThread ct : connections) {
                 if (ct.getId() == threadID) {
                     connections.remove(ct);
-                    serverGUI.addToEvents(threadID + " has disconnected.");
+                    serverGUI.addToEvents("ThreadID: " + threadID + " has disconnected silently. No broadcasting.");
                     break;
                 }
             }

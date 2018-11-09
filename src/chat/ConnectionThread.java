@@ -114,7 +114,7 @@ public class ConnectionThread extends Thread {
             Server.silentRemoveConnection(this.getId());
         }
         else{
-            Server.removeConnection(this.getId());
+            Server.removeConnection(this.getName());
         }
     }
 }
