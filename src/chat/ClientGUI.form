@@ -65,7 +65,9 @@
             <preferred-size width="150" height="-1"/>
           </grid>
         </constraints>
-        <properties/>
+        <properties>
+          <toolTipText value="Enter message to broadcast everyone."/>
+        </properties>
       </component>
       <component id="99da1" class="javax.swing.JLabel" binding="msgLabel">
         <constraints>
@@ -81,6 +83,7 @@
         </constraints>
         <properties>
           <text value="Send"/>
+          <toolTipText value="Send to everyone"/>
         </properties>
       </component>
       <component id="b652" class="javax.swing.JList" binding="connectedUsers">
@@ -99,6 +102,7 @@
         </constraints>
         <properties>
           <text value="Connect"/>
+          <toolTipText value="Connect/Disconnect from server."/>
         </properties>
       </component>
       <component id="a8c80" class="javax.swing.JLabel" binding="onlineUsersLabel">
@@ -115,6 +119,7 @@
         </constraints>
         <properties>
           <text value="Refresh"/>
+          <toolTipText value="Refreshes online users."/>
         </properties>
       </component>
       <scrollpane id="49e12">
@@ -163,6 +168,7 @@
         </constraints>
         <properties>
           <text value=""/>
+          <toolTipText value="Your message here."/>
         </properties>
       </component>
       <component id="8f6e3" class="javax.swing.JLabel" binding="pvtMsgLabel">
@@ -179,6 +185,7 @@
         </constraints>
         <properties>
           <text value="Send"/>
+          <toolTipText value="Send private message."/>
         </properties>
       </component>
       <component id="5551a" class="javax.swing.JButton" binding="clearTextBtn">
