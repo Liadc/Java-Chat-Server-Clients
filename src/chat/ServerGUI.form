@@ -5,7 +5,9 @@
     <constraints>
       <xy x="20" y="20" width="869" height="604"/>
     </constraints>
-    <properties/>
+    <properties>
+      <toolTipText value="This app is developed by Liad Cohen and Timor Sharabi"/>
+    </properties>
     <border type="none"/>
     <children>
       <component id="39ccb" class="javax.swing.JTextField" binding="portField">
