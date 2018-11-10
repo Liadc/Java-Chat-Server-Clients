@@ -52,16 +52,21 @@ public class ServerGUI {
         });
 
         // refresh button is pressed.
+
         refreshButton.addActionListener(e -> {
-            DefaultListModel model = new DefaultListModel();
-            ArrayList<ConnectionThread> connections = Server.getConnections();
-            ArrayList<String> usernames = new ArrayList<>(connections.size());
-            for(ConnectionThread ct : connections){
-                usernames.add(ct.getName());
+            if (startServerButton.getText().equals("Stop Server")) {
+                DefaultListModel model = new DefaultListModel();
+                ArrayList<ConnectionThread> connections = Server.getConnections();
+                ArrayList<String> usernames = new ArrayList<>(connections.size());
+                for(ConnectionThread ct : connections){
+                    usernames.add(ct.getName());
+                }
+                model.addAll(usernames);
+                onlineUsers.setModel(model);
+                onlineUsers.setVisible(true);
+            } else{
+                addToEvents("Server is disconnected, cannot refresh online users..");
             }
-            model.addAll(usernames);
-            onlineUsers.setModel(model);
-            onlineUsers.setVisible(true);
         });
     }
 
@@ -97,6 +102,7 @@ public class ServerGUI {
         frame.setMinimumSize(new Dimension(650,490));
         frame.setSize(700,500);
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE); //the default close for the frame, do nothing, because we will prompt a confirmation message. (in constructor).
+        frame.setIconImage( new ImageIcon("./img/serverIcon.png").getImage()); // Set our icon to Server gui.
         new ServerGUI(); //calls the constructor.
     }
 
