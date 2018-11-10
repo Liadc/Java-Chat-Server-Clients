@@ -262,8 +262,8 @@ public class Server implements Runnable {
     }
 
     /******** Private *********/
-    private static ArrayList<ConnectionThread> connections = new ArrayList<>();
-    private int port;
-    private boolean keepGoing = true;
+    private static ArrayList<ConnectionThread> connections = new ArrayList<>(); //all our connections with clients, saved in arraylist.
+    private int port; //our port.
+    private boolean keepGoing = true; //boolean to indicate keep listening for new clients, or terminate and close this thread.
     private static ServerGUI serverGUI; //a GUI (on another thread) so this server can update some UI elements.
 }
