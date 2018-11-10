@@ -121,6 +121,7 @@ public class ClientGUI {
         frame.setMinimumSize(new Dimension(630,420));
         frame.setSize(640,440);
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE); //the default close for the frame, do nothing, because we will prompt a confirmation message. (in constructor).
+        frame.setIconImage( new ImageIcon("./img/ourIcon.png").getImage()); // Set our icon to Client gui.
         new ClientGUI(); //calls constructor.
     }
 
