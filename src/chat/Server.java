@@ -111,6 +111,15 @@ public class Server implements Runnable {
         }catch (Exception e){}//nothing we can do.
     }
 
+    /**
+     * This method will iterate through all online clients and send them a message (string) from the server.
+     * Our application works in two simultaneous directions: server Events and Messages. Messages including:
+     * a client requested to send everyone a message in the chat (regular message). we will use this method.
+     * This method might be called simultaneously from many different ConnectionThreads, and might get out of sync. thus - this method will be synchronized.
+     * @param msg String, the message to send to everybody.
+     * @param fromThreadName String, the name of the thread(which equals the name of the client) who wants to send the message.
+     *                       This will be used to manipulate the actual message with the name of the sender.
+     */
     synchronized static void broadcastMsgs(String msg, String fromThreadName) {
         String msgSent = "Username " + fromThreadName + " broadcasted: " + msg; //update threadID to username.
         serverGUI.addToMsgs(msgSent);
