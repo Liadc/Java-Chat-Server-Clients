@@ -64,7 +64,7 @@ public class ConnectionThread extends Thread {
                 for(ConnectionThread ct : Server.getConnections()){
                     if(ct.getName().equals(username)){
                         print("!9Server: username already in use. try a different name."); //!9 indicates to pick different username.
-                        System.out.println("Found some1 same name");
+                        System.out.println("Found some1 with the same name, disconnecting this client connection attempt.");
                         sameName = true;
                         shutdown(true); //no broadcasting for disconnecting this user.
                         break;
