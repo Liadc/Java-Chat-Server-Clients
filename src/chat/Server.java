@@ -228,6 +228,11 @@ public class Server implements Runnable {
         return allUsers.toString();
     }
 
+    /**
+     * This method will be called to shutdown the server. it will also try to notify all users about this shutdown.
+     * we broadcast the message "!3" to indicate the clients that the server is telling them about a shutdown.
+     * we also stop listening to new connections and shutting down this thread by changing the keepGoing variable to FALSE.
+     */
     void stopServer() {
         try {
             broadcastServEvents("!3"); //telling all clients we are shutting down.
@@ -239,12 +244,19 @@ public class Server implements Runnable {
         }
     }
 
+    /**
+     * This method will be called as soon as this Thread is created. we override the run() method of Runnable so we can manage the server properly.
+     */
     @Override
     public void run() {
         this.keepGoing = true;
         this.startServer();
     }
 
+    /**
+     * a Getter method for the ArrayList of ConnectionThread, which contains all currently threads handling the client-server communication.
+     * @return ArrayList of type ConnectionThread, contains all currently alive threads handling the client-server communication.
+     */
     static ArrayList<ConnectionThread> getConnections() {
         return connections;
     }
