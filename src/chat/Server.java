@@ -18,6 +18,8 @@ import java.util.ArrayList;
  * these functions will actually be called from a ConnectionThread thread, hence some of these functions will be Synchronized.
  * The Server will store the following: its Port, its ServerGUI (so it can update UI elements), ArrayList<ConnectionThread> connections (to manage all currently online users)
  * and a boolean keepGoing which indicates to terminate the thread or not.
+ *
+ * @author Liad Cohen, Timor Sharabi
  */
 public class Server implements Runnable {
 
@@ -130,12 +132,23 @@ public class Server implements Runnable {
     }
 
     //to private message between clients.
-    synchronized static void sendPvtMsg(String msg, String fromThreadUsername) { //update: optimize this, changes needed
+
+    /**
+     * This method will get a String (username who wants to send the message) and a string representing the message of the form: toUsername:bla
+     * the method will substring the message into two parts revealing who we need to send the message to.
+     * Then, the method will iterate through all currently online users and search for this username. once it found, it will send the second part of the message
+     * with the name of the sender to the corresponding client. otherwise, it will send the sender that this username is not found.
+     *
+     * This method might be called simultaneously from many different ConnectionThreads, and might get out of sync. thus - this method will be synchronized.
+     * @param msg String, the message of the form:  toUsername:Message
+     * @param fromThreadUsername String, the name of the sender.
+     */
+    synchronized static void sendPvtMsg(String msg, String fromThreadUsername) {
         boolean foundTargetUser = false; //indicate if we found target user.
         String msgTo = msg.substring(0, msg.indexOf(':'));
         System.out.println("msgTo now equals: " + msgTo);
         for (ConnectionThread ct : connections) {
-            if (ct.getName().equals(msgTo)) { //found the userID. changed to userName.
+            if (ct.getName().equals(msgTo)) { //found the userName.
                 System.out.println("Found username.!!");
                 String pureMsg = msg.substring(msg.indexOf(':') + 1); //pure message is the text data in the message.
                 ct.print("From " + fromThreadUsername + ": " + pureMsg);
@@ -153,6 +166,14 @@ public class Server implements Runnable {
         }
     }
 
+    /**
+     * This method will get a String representing the username of the client who asked to disconnect,
+     * and removes it from the connections ArrayList, as well as notifying every other client about this disconnection,
+     * as well as updating the ServerGUI events area with this disconnection.
+     *
+     * This method might be called simultaneously from many different ConnectionThreads, and might get out of sync. thus - this method will be synchronized.
+     * @param userName String, represents the username of the client who asked to disconnect.
+     */
     synchronized static void removeConnection(String userName) {
         serverGUI.addToEvents(userName + " asked to disconnect.");
         if(connections != null) {
@@ -167,6 +188,16 @@ public class Server implements Runnable {
         }
     }
 
+    /**
+     * This method will get a Long threadID representing the ID of the THREAD (the ConnectionThread) for a client who is going to get disconnected,
+     * and removes it from the connections ArrayList, but WILL NOT notify any client about this disconnection.
+     * This method is used when a user tries to pick a username which is already taken for example. This way,
+     * we disconnect the client because of the same username, (we have unique-username policy)
+     * but we won't notify anyone about the connection or the disconnection of that client.
+     *
+     * This method might be called simultaneously from many different ConnectionThreads, and might get out of sync. thus - this method will be synchronized.
+     * @param threadID Long, representing the ID of the Thread called the function. (a ConnectionThread representing the client).
+     */
     synchronized static void silentRemoveConnection(long threadID) {
         serverGUI.addToEvents(threadID + " will disconnect silently, no broadcasting.");
         if(connections != null) {
@@ -181,11 +212,13 @@ public class Server implements Runnable {
     }
 
     /**
-     * Going through all connection threads, and adding their names.
-     * This method will be called when "show online" button is pressed.
+     * This method will be going through all connection threads, and adding their names to a string.
+     * This method will be called when "show online" (refresh) button is pressed. eventually, will return that string.
+     *
+     * This method might be called simultaneously from many different ConnectionThreads, and might get out of sync. thus - this method will be synchronized.
      * @return String, contains all users.
      */
-    static String getUsersOnline() {
+    synchronized static String getUsersOnline() {
         StringBuilder allUsers = new StringBuilder();
         for (ConnectionThread ct : connections) {
             allUsers.append(ct.getName()).append(",");
