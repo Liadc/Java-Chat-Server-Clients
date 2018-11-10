@@ -36,7 +36,7 @@ public class ServerGUI {
                     addToEvents("Bad port! Starting server on default port: 1337");
                 }
                 if (portInteger < 1024 || portInteger > 65553) {
-                    addToEvents("Bad port! Must be between 1001-65553. \nStarting server on default port: 1337");
+                    addToEvents("Bad port! Must be between 1024-65553. \nStarting server on default port: 1337");
                     portInteger = 1337;
                 }
                 this.server = new Server(portInteger, this); //just constructs an object Server with specific port. also sends this GUI to the server, so it can update some UI elements.

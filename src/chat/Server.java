@@ -6,18 +6,50 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 
+/**
+ * This class represents the Server side of our chat application.
+ * a Server object will run as a Thread hence this class will implement Runnable.
+ * The server is the "Brain" of our application. The server will initiate itself with the ServerGUI (or without it)
+ * The server will listen for any connection on the port given (valid ports 1024-65553), and as soon as a connection is made-
+ * The server will initiate a ConnectionThread Thread which will handle all communication between the user connected and the server.
+ * Then the server will keep listening for new clients. (Until disconnection happens or the Stop Server button pressed).
+ * The server will have the following functions: broadcastServEvents, broadcastMsgs, sendPvtMsg, removeConnection, silentRemoveConnection,
+ * getUsersOnline, stopServer, run (Override run of Runnable). Since the server will always listen for new connections,
+ * these functions will actually be called from a ConnectionThread thread, hence some of these functions will be Synchronized.
+ * The Server will store the following: its Port, its ServerGUI (so it can update UI elements), ArrayList<ConnectionThread> connections (to manage all currently online users)
+ * and a boolean keepGoing which indicates to terminate the thread or not.
+ */
 public class Server implements Runnable {
 
+    /**
+     * Constructor method for the Server.
+     * This constructor is used mainly with the CMD given only a port. (no GUI).
+     * This constructor is used to test SERVER logic and functions, including Server communication to Client through TELNET inside CMD.
+     * @param port Integer, between 1024 to 65553.
+     */
     Server(int port) {
         this.port = port;
-    } //constructor for Server. doesn't use GUI.
-    // This is mainly used to complete the functions needed using CMD client<->server communication using TELNET without any GUI developed.
+    }
 
+    /**
+     * Constructor method for the Server.
+     * Will get initiated from a GUI using a button.
+     * This constructor initiate the Server with a given port number
+     * @param port Integer, between 1024-65553 (check for validation doesn't happen in the constructor).
+     * @param anyGUI ServerGUI, will get initiated from a ServerGUI button and will pass itself (the gui) to the constructor.
+     */
     Server(int port, ServerGUI anyGUI) { //Providing a GUI so the server can update some UI elements in another thread.
         this.port = port;
         serverGUI = anyGUI;
     }
 
+    /**
+     * startServer represents an attempt to start listening for clients on specific port given.
+     * as long as the attempt succeeded, the Server will keep listening for new clients.
+     * as soon as a client connected, the Server will "move" the connection to a new thread (ConnectionThread) to handle all communication with this client.
+     * This way, the server can keep listening for new clients.
+     * if a failure happens (invalid port, used port, stopServerButton pressed, etc.) it will throw specific exceptions, notify and update the GUI.
+     */
     private void startServer() {
         this.keepGoing = true;
         ServerSocket server = null;
@@ -55,12 +87,16 @@ public class Server implements Runnable {
                 stopServer();
             }
         }
-    }//listening method
+    }
 
     /**
      * This method will iterate through all online clients and send them an event(string) from the server.
+     * Our application works in two simultaneous directions: server Events and Messages. Events including: someone connected/disconnected,
+     * someone wants to private message, someone requested to get all online users, etc. Most of clients requests are considered events.
+     * We want to broadcast everyone about some of these event, for example: Client X connected.  we will use this method.
      *
-     * @param msg the event to send.
+     * This method might be called simultaneously from many different ConnectionThreads, and might get out of sync. thus - this method will be synchronized.
+     * @param msg String, the event to send to everybody.
      */
     synchronized static void broadcastServEvents(String msg) {
         System.out.println("event occured, broadcasting this event: " + msg);
