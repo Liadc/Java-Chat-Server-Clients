@@ -102,7 +102,6 @@ public class ServerGUI {
         frame.setMinimumSize(new Dimension(650,490));
         frame.setSize(700,500);
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE); //the default close for the frame, do nothing, because we will prompt a confirmation message. (in constructor).
-//        ImageIcon icon = new ImageIcon("./img/ourIcon.png");
         frame.setIconImage( new ImageIcon("./img/ourIcon.png").getImage()); // Set our icon to Server gui.
         new ServerGUI(); //calls the constructor.
     }
