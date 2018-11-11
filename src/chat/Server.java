@@ -58,7 +58,7 @@ public class Server implements Runnable {
 
         try {
             server = new ServerSocket(port);
-        } catch (BindException bException) { //port is binded and already in use.
+        } catch (BindException bException) { /**port is binded and already in use.*/
             serverGUI.addToEvents("Recently used this port, try a different port!");
             stopServer();
         } catch (IOException e) {
