@@ -7,11 +7,24 @@ import java.awt.event.WindowEvent;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
+/**
+ * This class represents the GUI of the client.
+ * It will show buttons for connecting to server, disconnecting, sending message to everyone, sending private message,
+ * refresh (for online users).
+ * and input area for text of the message, for a private message, input for PORT, for InetAddress, for a username,
+ * and for a username of the private message we send to.
+ * and TextArea for the chat area itself.
+ *
+ * @author Liad Cohen, Timor Sharabi.
+ */
 public class ClientGUI {
-
-
+    /**
+     * Constructor for the GUI.
+     * All listeners for actions (click events on buttons, etc.) will be in this constructor.
+     * logic for connecting/valid inputs will be checked inside also.
+     */
     private ClientGUI() {
-        //actionListener for red X Jframe close button.
+        /** actionListener for red X Jframe close button.*/
         frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent we)
@@ -28,7 +41,7 @@ public class ClientGUI {
             }
         });
 
-        //actionListener for Connect/Disconnect button.
+        /** actionListener for Connect/Disconnect button.*/
         connectButton.addActionListener(e -> {
             if (connectButton.getText().equals("Connect")){
                 //check for valid inputs here, as well as username/port/ip etc. before try/catch.
@@ -36,7 +49,7 @@ public class ClientGUI {
                     addMsg("You must enter a username!");
                     return;
                 }
-                //lets check IP and PORT are valid.
+                /** lets check IP and PORT are valid. */
                 try{
                     ip = InetAddress.getByName(ipField.getText());
                     port = Integer.parseInt(portField.getText()); //update: might fail, use try-catch.
@@ -52,7 +65,7 @@ public class ClientGUI {
                     return;
                 }
 
-                //we can now try to connect on another Thread.
+                /** we can now try to connect on another Thread. */
                 client = new Client(ip, port, this,usernameTextField.getText());
                 Thread clientThread = new Thread(client);
                 clientThread.start();
@@ -68,9 +81,9 @@ public class ClientGUI {
                 connectButton.setText("Connect");
             }
 
-        }); //end actionListener for connect/disconnect button.
+        }); /** end actionListener for connect/disconnect button. */
 
-        //actionListener for "Send" button. for broadcasting.
+        /** actionListener for "Send" button. for broadcasting. */
         sendAllButton.addActionListener(e -> {
             if(connectButton.getText().equals("Disconnect")){ //indicates client is connected.
                 sendMsg("!5"+msgField.getText());
@@ -80,9 +93,9 @@ public class ClientGUI {
             }
            msgField.setText(""); //empty text area after message sent.
 
-        }); //end actionListener for sendAllButton.
+        }); /** end actionListener for sendAllButton. */
 
-        //actionListener for "Refresh" button.
+        /** actionListener for "Refresh" button. */
         refreshButton.addActionListener(e -> { //indicates client is connected.
             if (connectButton.getText().equals("Disconnect")) { //only if user is connected.
                 client.requestOnline();
@@ -90,9 +103,9 @@ public class ClientGUI {
             else{
                 addMsg("You are disconnected, cannot refresh online users list...");
             }
-        }); //end actionListener for refreshButton.
+        }); /** end actionListener for refreshButton. */
 
-        //actionListener for "Send Private Message" button.
+        /** actionListener for "Send Private Message" button. */
         sendPvtMsgBtn.addActionListener(e -> {
             if (connectButton.getText().equals("Disconnect")) { //only if user is connected.
                 //try to send private message here.
@@ -105,14 +118,23 @@ public class ClientGUI {
             }
             pvtMsgText.setText("");
         });
-        //actionListener for "clearTextBtn"
+        /** actionListener for "clearTextBtn" */
         clearTextBtn.addActionListener(e -> chatArea.setText(""));
     }
 
+    /**
+     * This method will get a String and append it to the chatArea element in the UI.
+     * @param msg String, the message to add to the chat Area.
+     */
     void addMsg(String msg) {
         chatArea.append(msg + "\n");
     }
 
+    /**
+     * Main function will run as we run the application.
+     * we will declare new JFrame, set its properties and then call the constructor which will initiate everything to the screen.
+     * @param args String[], will run without any params.
+     */
     public static void main(String[] args) {
         frame = new JFrame("Client - Amazing Ex4 Chat App"); //new frame for our GUI
         frame.setContentPane(new ClientGUI().mainPanel); //set the pane for the frame as our JPanel from our form.
@@ -125,12 +147,20 @@ public class ClientGUI {
         new ClientGUI(); //calls constructor.
     }
 
-
+    /**
+     * This method will get a DefaultListModel and add it to the GUI as the list of online users.
+     * @param _model DefaultListModel, containing all online users.
+     */
     void setListModel(DefaultListModel _model) {
         connectedUsers.setModel(_model);
         connectedUsers.setVisible(true);
     }
 
+    /**
+     * This method will return the connectButton of the GUI. the method will be called sometimes from the Client
+     * class, so the client can update this button according to the connection with the server.
+     * @return
+     */
     JButton getConnectBtn(){ //will be used by Client.java to update button when connection is terminated or failed.
         return this.connectButton;
     }

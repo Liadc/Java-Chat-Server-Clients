@@ -131,8 +131,6 @@ public class Server implements Runnable {
         }
     }
 
-    //to private message between clients.
-
     /**
      * This method will get a String (username who wants to send the message) and a string representing the message of the form: toUsername:bla
      * the method will substring the message into two parts revealing who we need to send the message to.
