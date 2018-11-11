@@ -40,7 +40,6 @@ public class Client implements Runnable {
         this.username = username;
     }
 
-
     /**
      * This method will get initiated as soon as we start the Client thread. hence, we override the run() of Runnable.
      * This method will try to connect to the server with the parameters given in constructor.
@@ -109,10 +108,19 @@ public class Client implements Runnable {
         sendMsg("!2");
     }
 
+    /**
+     * This method will get a String message and sends this string to the server through our 'writer'
+     * Which is our PrintWriter, the OutputStream to the server.
+     * @param msg String, the message to send to the server.
+     */
     void sendMsg(String msg) { // does not update GUI, because it sends to the server. the server will update all GUIs accordingly.
         writer.println(msg);
     }
 
+    /**
+     * This method will close the inputStream and outputStream and then the socket itself.
+     * it will also update the GUI "disconnect" button to "Connect".
+     */
     void closeConnection() {
         try {
             if (writer != null) {
@@ -138,8 +146,7 @@ public class Client implements Runnable {
         clientGUI.getConnectBtn().setText("Connect");
     }
 
-    //Private
-
+    /******* Private *******/
     private String username;
     private boolean keepGoing = true;
     private ClientGUI clientGUI;
@@ -150,13 +157,20 @@ public class Client implements Runnable {
     private PrintWriter writer;
 
     /**
+     * This method will handle the messages received from the server.
+     * This method will be called from another Thread which listens to the server messages.
+     * This method will notice what the server meant (is it an event or just a message to show on chat, etc).
+     * The logic is as follows; the server sent:
+     * starts with '!2' indicates the server sends us the online users, in the form of !2name1,name2,name3, etc.
+     * starts with '!3' indicates the server is telling us he is shutting down. (so we can close all buffers and threads properly)
+     * starts with '!9' indicates the server is telling us to pick a different username.
+     * starts with Non-Of-The-Above, the server sending us a regular message to show on Chat on ClientGUI.
      *
-     * @param line - represents string by the form:
-     *             if starts with !2 so its in the form !2ID1,ID2,ID3,ID4 where IDi where i is ID.
-     *             else if PRIVETMSG - start with !1 so its in the form !1ID:MSG
-     *             else,
-     *             send the msg to the ClientGUI
-     *
+     * @param line String, represents message from the server, with certain logic:
+     * starts with '!2' indicates the server sends us the online users, in the form of !2name1,name2,name3, etc.
+     * starts with '!3' indicates the server is telling us he is shutting down. (so we can close all buffers and threads properly)
+     * starts with '!9' indicates the server is telling us to pick a different username.
+     * starts with Non-Of-The-Above, the server sending us a regular message to show on Chat on ClientGUI.
      */
     private void handleMsg(String line) {
         if (line.startsWith("!2")) { //all online users

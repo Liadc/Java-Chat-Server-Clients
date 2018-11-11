@@ -9,7 +9,6 @@ import java.util.ArrayList;
 
 public class ServerGUI {
 
-
     private ServerGUI() { //constructor.
         //actionListener for red X button to close window.
         frame.addWindowListener(new WindowAdapter() {
