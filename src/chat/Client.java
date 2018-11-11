@@ -9,8 +9,30 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.util.Arrays;
 
+/**
+ This class represents the Client side of our chat application.
+ * a Client object will run as a Thread hence this class will implement Runnable.
+ * The client will initiate itself with the ClientGUI, the IP address and port to connect to, and a unique username.
+ * The client will initiate a connect to a server on given IP address and PORT. (valid ports 1024-65553), and as soon as a connection is made-
+ * The client will initiate a thread which will listen for messages from the server.
+ * The client itself will have the option to send messages to the server. (Until disconnection happens or the Disconnect button pressed).
+ * The client will have the following functions: run(), requestUsername, requestOnline, sendMsg, closeConnection.
+ * The client-server communication will happen between the Client (this) class and the ClientConnection which will manage
+ * the input/output between the client/server.
+ * The Client will store the following: the Port to connect to, the Host IP address to connect to,
+ * the ClientGUI, and the username.
+ *
+ * @author Liad Cohen, Timor Sharabi.
+ */
 public class Client implements Runnable {
 
+    /**
+     * A constructor for the Client object, will update the port, host IP, GUI, and username.
+     * @param host InetAddress, the IP address of the host server to connect to.
+     * @param port Integer, the port of the host server to connect to.
+     * @param gui ClientGUI, our GUI for the client side.
+     * @param username String, our username we to the chat with.
+     */
     Client(InetAddress host, int port, ClientGUI gui, String username) {
         this.ip = host;
         this.port = port;
@@ -19,6 +41,14 @@ public class Client implements Runnable {
     }
 
 
+    /**
+     * This method will get initiated as soon as we start the Client thread. hence, we override the run() of Runnable.
+     * This method will try to connect to the server with the parameters given in constructor.
+     * once connected to the host server, it will initiate a new thread to listen for messages from the server.
+     * and also sends a request (a string message) to the server asking to set a username.
+     * if connection fails, or the server respond with the answer "username already taken" (actual message is "!9")
+     * the client will close connection and will have to try and connect again.
+     */
     @Override
     public void run() {
         try { //trying to connect
@@ -57,12 +87,24 @@ public class Client implements Runnable {
         requestUsername(this.username);
     }
 
-    //sends message to Server, asking to update his username.
+    /**
+     * This method will get a String username (taken from the GUI corresponding username text area) and sends
+     * a message to the server "!4USERNAME". the server will notice it starts with '!4', and will know the user is
+     * asking to set his name.
+     * This method will be called once connection is made, and only once.
+     * @param username String, the username we are asking the server to set for us.
+     */
     private void requestUsername(String username) {
         sendMsg("!4"+username);
     }
 
     //a message "!2" indicates a request for all online users.
+
+    /**
+     * This method will send a message "!2" to the server. the server will notice it starts with '!2', and will
+     * know the user is asking to get all currently online users.
+     * This method will be called once 'refresh' button is pressed in GUI.
+     */
     void requestOnline() {
         sendMsg("!2");
     }
