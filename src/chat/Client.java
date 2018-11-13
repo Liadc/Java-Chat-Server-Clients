@@ -53,15 +53,25 @@ public class Client implements Runnable {
         try { //trying to connect
             socket = new Socket(this.ip, this.port);
         } catch (IOException e) { //some error connecting, cannot even establish connection with socket.
-            clientGUI.addMsg("Cannot connect to server: connection refused. \nPlease check your input. The server might also be offline." ); //connection refused.
-            clientGUI.getConnectBtn().setText("Connect");
-            return; //kill current thread.
+            if(clientGUI!=null) { /** if we have a GUI, show message on GUI. otherwise, to system out.*/
+                clientGUI.addMsg("Cannot connect to server: connection refused. \nPlease check your input. " +
+                        "The server might also be offline." ); //connection refused.
+                clientGUI.getConnectBtn().setText("Connect");
+            } else { /**No GUI, we print to console. */
+                System.out.println("Cannot connect to server: connection refused. \nPlease check your input. " +
+                        "The server might also be offline.");
+            }
+            return; /**kill current thread.*/
         }
-        try { //trying to create i/o streams.
+        try { /**trying to create i/o streams.*/
             this.reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             this.writer = new PrintWriter(socket.getOutputStream(), true);
         } catch (IOException e1) {
-            clientGUI.addMsg("Cannot create input/output streams (reader/writer)");
+            if(clientGUI != null){
+            clientGUI.addMsg("Cannot create input/output streams (reader/writer)");}
+            else{
+                System.out.println("Cannot create input/output streams (reader/writer)");
+            }
             return; //kill current thread.
         }
         //we can now listen to the server, on another thread (so we don't block this thread!).
@@ -74,7 +84,12 @@ public class Client implements Runnable {
                         handleMsg(line);
                     }
                 } catch (IOException ioException) { //This means the connection is now closed, probably by the server, but maybe by "Disconnect" button from client.
-                    clientGUI.addMsg("You are disconnected.");
+
+                    if (clientGUI!=null) {
+                        clientGUI.addMsg("You are disconnected.");
+                    } else {
+                        System.out.println("You are disconnected.");
+                    }
                     break;
                     //update: maybe change some GUI buttons to non-clickable if this happens.
                 }
@@ -127,23 +142,35 @@ public class Client implements Runnable {
                 writer.close();
             }
         } catch (Exception e) {
-            clientGUI.addMsg("Error with closing current outputStream -> writer");
+            if(clientGUI!=null)
+                clientGUI.addMsg("Error with closing current outputStream -> writer");
+            else
+                System.out.println("Error with closing current outputStream -> writer");
         }
         try {
             if (reader != null) {
                 reader.close();
             }
         } catch (Exception e) {
-            clientGUI.addMsg("Error with closing current inputStream -> reader");
+            if (clientGUI!=null) {
+                clientGUI.addMsg("Error with closing current inputStream -> reader");
+            } else {
+                System.out.println("Error with closing current inputStream -> reader");
+            }
         }
         try {
             if (socket != null) {
                 socket.close();
             }
         } catch (Exception e) {
-            clientGUI.addMsg("Error with closing socket!");
+            if (clientGUI!=null) {
+                clientGUI.addMsg("Error with closing socket!");
+            } else {
+                System.out.println("Error with closing socket!");
+            }
         }
-        clientGUI.getConnectBtn().setText("Connect");
+        if(clientGUI!=null) /** updates GUI 'disconnect' button to 'Connect' because we are disconnected now. */
+            clientGUI.getConnectBtn().setText("Connect");
     }
 
     /******* Private *******/
