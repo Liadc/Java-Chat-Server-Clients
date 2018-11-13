@@ -28,8 +28,12 @@ class ClientTest {
         Server localServ = new Server(1337);
         Thread serverThread = new Thread(localServ); //assign new thread with Server object (Server implements Runnable)
         serverThread.start();
-
         System.out.println("Server Created, listening on port 1337");
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
