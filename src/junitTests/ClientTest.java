@@ -30,7 +30,7 @@ class ClientTest {
         serverThread.start();
         System.out.println("Server Created, listening on port 1337");
         try {
-            Thread.sleep(5000);
+            Thread.sleep(50);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -54,17 +54,12 @@ class ClientTest {
         clientThread.start();
         try {
             Thread.sleep(20);
-            if (queue.take().contains("ERR:")) {
+            if (queue.size()>0 && queue.take().contains("ERR:")) {
                 fail("Failed connection to the localhost server");
             }
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-    }
-
-    @AfterEach
-    void disconnectClient(){
-        testClient.closeConnection();
     }
 
     @Test

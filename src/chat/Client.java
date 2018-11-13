@@ -183,7 +183,7 @@ public class Client implements Runnable {
                 clientGUI.addMsg("Error with closing socket!");
             } else {
                 try {
-                    queue.put("Error with closing socket!");
+                    queue.put("ERR: Error with closing socket!");
                 } catch (InterruptedException e1) {
                     e1.printStackTrace();
                 }

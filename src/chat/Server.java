@@ -5,6 +5,7 @@ import java.net.BindException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.concurrent.BlockingQueue;
 
 /**
  * This class represents the Server side of our chat application.
@@ -89,7 +90,7 @@ public class Server implements Runnable {
                 if (serverGUI!=null) {
                     serverGUI.addToEvents("Recently used port, try a different port.");
                 } else {
-                    throw new RuntimeException("Recently used port, try a different port.");
+                    //all ok
                 }
                 stopServer();
             }
