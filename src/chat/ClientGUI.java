@@ -66,7 +66,7 @@ public class ClientGUI {
                 }
 
                 /** we can now try to connect on another Thread. */
-                client = new Client(ip, port, this,usernameTextField.getText());
+                client = new Client(ip, port, this,usernameTextField.getText(),null);
                 Thread clientThread = new Thread(client);
                 clientThread.start();
                 connectButton.setText("Disconnect");
