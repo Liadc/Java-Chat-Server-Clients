@@ -8,6 +8,7 @@ import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.util.Arrays;
+import java.util.concurrent.BlockingQueue;
 
 /**
  This class represents the Client side of our chat application.
@@ -22,22 +23,28 @@ import java.util.Arrays;
  * The Client will store the following: the Port to connect to, the Host IP address to connect to,
  * the ClientGUI, and the username.
  *
+ *  if we have a GUI, we show message or errors on GUI. otherwise, we use BlockingQueue and share there some data so
+ *  JUnit tests can watch them. we put into the BlockingQueue so JUnit can decide what happens.
+ *
  * @author Liad Cohen, Timor Sharabi.
  */
 public class Client implements Runnable {
 
     /**
+     *
      * A constructor for the Client object, will update the port, host IP, GUI, and username.
      * @param host InetAddress, the IP address of the host server to connect to.
      * @param port Integer, the port of the host server to connect to.
      * @param gui ClientGUI, our GUI for the client side.
      * @param username String, our username we to the chat with.
+     * @param queue BlockingQueue, used by JUnit for testing all functions using concurrency threads sharing data.
      */
-    Client(InetAddress host, int port, ClientGUI gui, String username) {
+    public Client(InetAddress host, int port, ClientGUI gui, String username,BlockingQueue<String> queue) {
         this.ip = host;
         this.port = port;
         this.clientGUI = gui;
         this.username = username;
+        this.queue = queue;
     }
 
     /**
@@ -53,15 +60,34 @@ public class Client implements Runnable {
         try { //trying to connect
             socket = new Socket(this.ip, this.port);
         } catch (IOException e) { //some error connecting, cannot even establish connection with socket.
-            clientGUI.addMsg("Cannot connect to server: connection refused. \nPlease check your input. The server might also be offline." ); //connection refused.
-            clientGUI.getConnectBtn().setText("Connect");
-            return; //kill current thread.
+            if(clientGUI!=null) { /** if we have a GUI, show message on GUI. otherwise, throws exception, so JUnit tests can catch them*/
+                clientGUI.addMsg("Cannot connect to server: connection refused. \nPlease check your input. " +
+                        "The server might also be offline." ); //connection refused.
+                clientGUI.getConnectBtn().setText("Connect");
+            } else { /**No GUI, we put into the BlockingQueue so JUnit can decide what happens. */
+                try {
+                    Thread.sleep(10);
+                    queue.put("ERR: Cannot connect to server: connection refused. \nPlease check your input. " +
+                            "The server might also be offline.");
+                } catch (InterruptedException e1) {
+                    e1.printStackTrace();
+                }
+            }
+            return; /**kill current thread.*/
         }
-        try { //trying to create i/o streams.
+        try { /**trying to create i/o streams.*/
             this.reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             this.writer = new PrintWriter(socket.getOutputStream(), true);
         } catch (IOException e1) {
-            clientGUI.addMsg("Cannot create input/output streams (reader/writer)");
+            if(clientGUI != null){
+            clientGUI.addMsg("Cannot create input/output streams (reader/writer)");}
+            else{
+                try {
+                    queue.put("ERR:Cannot create input/output streams (reader/writer)");
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
             return; //kill current thread.
         }
         //we can now listen to the server, on another thread (so we don't block this thread!).
@@ -74,7 +100,15 @@ public class Client implements Runnable {
                         handleMsg(line);
                     }
                 } catch (IOException ioException) { //This means the connection is now closed, probably by the server, but maybe by "Disconnect" button from client.
-                    clientGUI.addMsg("You are disconnected.");
+                    if (clientGUI!=null) {
+                        clientGUI.addMsg("You are disconnected.");
+                    } else{
+                        try {
+                            queue.put("ERR: You are disconnected.");
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
                     break;
                     //update: maybe change some GUI buttons to non-clickable if this happens.
                 }
@@ -86,19 +120,7 @@ public class Client implements Runnable {
         requestUsername(this.username);
     }
 
-    /**
-     * This method will get a String username (taken from the GUI corresponding username text area) and sends
-     * a message to the server "!4USERNAME". the server will notice it starts with '!4', and will know the user is
-     * asking to set his name.
-     * This method will be called once connection is made, and only once.
-     * @param username String, the username we are asking the server to set for us.
-     */
-    private void requestUsername(String username) {
-        sendMsg("!4"+username);
-    }
-
     //a message "!2" indicates a request for all online users.
-
     /**
      * This method will send a message "!2" to the server. the server will notice it starts with '!2', and will
      * know the user is asking to get all currently online users.
@@ -121,40 +143,67 @@ public class Client implements Runnable {
      * This method will close the inputStream and outputStream and then the socket itself.
      * it will also update the GUI "disconnect" button to "Connect".
      */
-    void closeConnection() {
+    public void closeConnection() {
         try {
             if (writer != null) {
                 writer.close();
             }
         } catch (Exception e) {
-            clientGUI.addMsg("Error with closing current outputStream -> writer");
+            if(clientGUI!=null)
+                clientGUI.addMsg("Error with closing current outputStream -> writer");
+            else {
+                try {
+                    queue.put("ERR: Error with closing current outputStream -> writer");
+                } catch (InterruptedException e1) {
+                    e1.printStackTrace();
+                }
+            }
         }
         try {
             if (reader != null) {
                 reader.close();
             }
         } catch (Exception e) {
-            clientGUI.addMsg("Error with closing current inputStream -> reader");
+            if (clientGUI!=null) {
+                clientGUI.addMsg("Error with closing current inputStream -> reader");
+            } else {
+                try {
+                    queue.put("ERR: Error with closing current inputStream -> reader");
+                } catch (InterruptedException e1) {
+                    e1.printStackTrace();
+                }
+            }
         }
         try {
             if (socket != null) {
                 socket.close();
             }
         } catch (Exception e) {
-            clientGUI.addMsg("Error with closing socket!");
+            if (clientGUI!=null) {
+                clientGUI.addMsg("Error with closing socket!");
+            } else {
+                try {
+                    queue.put("ERR: Error with closing socket!");
+                } catch (InterruptedException e1) {
+                    e1.printStackTrace();
+                }
+            }
         }
-        clientGUI.getConnectBtn().setText("Connect");
+        if(clientGUI!=null) /** updates GUI 'disconnect' button to 'Connect' because we are disconnected now. */
+            clientGUI.getConnectBtn().setText("Connect");
     }
-
     /******* Private *******/
-    private String username;
-    private boolean keepGoing = true;
-    private ClientGUI clientGUI;
-    private int port;
-    private InetAddress ip;
-    private Socket socket;
-    private BufferedReader reader;
-    private PrintWriter writer;
+
+    /**
+     * This method will get a String username (taken from the GUI corresponding username text area) and sends
+     * a message to the server "!4USERNAME". the server will notice it starts with '!4', and will know the user is
+     * asking to set his name.
+     * This method will be called once connection is made, and only once.
+     * @param username String, the username we are asking the server to set for us.
+     */
+    private void requestUsername(String username) {
+        sendMsg("!4"+username);
+    }
 
     /**
      * This method will handle the messages received from the server.
@@ -174,22 +223,62 @@ public class Client implements Runnable {
      */
     private void handleMsg(String line) {
         if (line.startsWith("!2")) { //all online users
-                line = line.substring(2);
-                String[] onlines = line.split(",");
-                DefaultListModel model = new DefaultListModel();
-                model.addAll(Arrays.asList(onlines));
+            line = line.substring(2);
+            String[] onlines = line.split(",");
+            DefaultListModel model = new DefaultListModel();
+            model.addAll(Arrays.asList(onlines));
+            if (clientGUI !=null) {
                 clientGUI.setListModel(model);
+            } else {
+                try {
+                    queue.put(line);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
         } else if (line.startsWith("!3")) {//server telling us he is shutting down.
             closeConnection();
             keepGoing = false;
-            clientGUI.addMsg("Server is shutting down, you are disconnected.");
+            if (clientGUI!=null) {
+                clientGUI.addMsg("Server is shutting down, you are disconnected.");
+            } else {
+                try {
+                    queue.put("Server is shutting down, you are disconnected.");
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
         }else if(line.startsWith("!9")){ //server telling us to pick different username.
             closeConnection();
-            clientGUI.addMsg(line.substring(2));
-        }else{
-            clientGUI.addMsg(line);
+            if (clientGUI !=null) {
+                clientGUI.addMsg(line.substring(2));
+            } else {
+                try {
+                    queue.put(line.substring(2));
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }else{ //server sending us regular message from broadcast.
+            if (clientGUI!=null) {
+                clientGUI.addMsg(line);
+            } else {
+                try {
+                    queue.put(line);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
-
+    private String username;
+    private boolean keepGoing = true;
+    private ClientGUI clientGUI;
+    private int port;
+    private InetAddress ip;
+    private Socket socket;
+    private BufferedReader reader;
+    private PrintWriter writer;
+    private BlockingQueue<String> queue;
 }

@@ -5,6 +5,7 @@ import java.net.BindException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.concurrent.BlockingQueue;
 
 /**
  * This class represents the Server side of our chat application.
@@ -27,9 +28,10 @@ public class Server implements Runnable {
      * Constructor method for the Server.
      * This constructor is used mainly with the CMD given only a port. (no GUI).
      * This constructor is used to test SERVER logic and functions, including Server communication to Client through TELNET inside CMD.
+     * And used for the JUnit tests.
      * @param port Integer, between 1024 to 65553.
      */
-    Server(int port) {
+    public Server(int port) {
         this.port = port;
     }
 
@@ -85,7 +87,11 @@ public class Server implements Runnable {
                 System.out.println("Error with IO");
                 e.printStackTrace();
             } catch (NullPointerException nullPointerException) {
-                serverGUI.addToEvents("Recently used port, try a different port.");
+                if (serverGUI!=null) {
+                    serverGUI.addToEvents("Recently used port, try a different port.");
+                } else {
+                    //all ok
+                }
                 stopServer();
             }
         }
