@@ -76,7 +76,7 @@ public class ConnectionThread extends Thread {
      */
     private void HandleMsg(String str) {
         if (str.startsWith("!1")) { //private message another client
-            System.out.println("Sending request from thread to Server, client asking to privateMessage"); //update: delete this.
+            System.out.println("Sending request from thread to Server, client "+this.getName()+" asking to privateMessage"); //update: delete this.
             Server.sendPvtMsg(str.substring(2), getName());
         } else if (str.startsWith("!2")) {//to get all users online, type !2
             writer.println("!2" + Server.getUsersOnline());

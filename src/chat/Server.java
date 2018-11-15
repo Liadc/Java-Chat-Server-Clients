@@ -42,7 +42,7 @@ public class Server implements Runnable {
      * @param port Integer, between 1024-65553 (check for validation doesn't happen in the constructor).
      * @param anyGUI ServerGUI, will get initiated from a ServerGUI button and will pass itself (the gui) to the constructor.
      */
-    Server(int port, ServerGUI anyGUI) { //Providing a GUI so the server can update some UI elements in another thread.
+    public Server(int port, ServerGUI anyGUI) { //Providing a GUI so the server can update some UI elements in another thread.
         this.port = port;
         serverGUI = anyGUI;
     }
@@ -61,7 +61,8 @@ public class Server implements Runnable {
         try {
             server = new ServerSocket(port);
         } catch (BindException bException) { /**port is binded and already in use.*/
-            serverGUI.addToEvents("Recently used this port, try a different port!");
+            if (serverGUI!=null)
+                serverGUI.addToEvents("Recently used this port, try a different port!");
             stopServer();
         } catch (IOException e) {
             e.printStackTrace();
@@ -70,19 +71,22 @@ public class Server implements Runnable {
 
         while (keepGoing) {
             try {
-                serverGUI.addToEvents("Waiting for connections on port: " + this.port + "....");
+                if(serverGUI!=null)
+                    serverGUI.addToEvents("Waiting for connections on port: " + this.port + "....");
                 Socket connection = server.accept(); //Thread stays here, waiting for connections.
                 ConnectionThread ct = new ConnectionThread(connection,"temp"); //username will be changed once InputStream object is initiated and gets the request from client.
                 connections.add(ct);
                 ct.start();
-                serverGUI.addToEvents("Connection made with new client, initiating new thread for this connection, we can keep listening...");
+                if (serverGUI!=null)
+                    serverGUI.addToEvents("Connection made with new client, initiating new thread for this connection, we can keep listening...");
                 while (ct.getName().equals("temp") && ct.isAlive()) {
-                    System.out.println("Still temp");
+//                    System.out.println("New user connected--Still waiting for a request to update his name!");
                     //do nothing, waiting for update. input stream is building up on another thread, let's wait for username update.
                 }
+                System.out.println("Updated new username now");
                 //username is now updated and sync in both server , connectionThread, and client.
-                serverGUI.addToEvents(ct.getName() + " has connected");
-
+                if (serverGUI!=null)
+                    serverGUI.addToEvents(ct.getName() + " has connected");
             } catch (IOException e) {
                 System.out.println("Error with IO");
                 e.printStackTrace();
@@ -130,7 +134,8 @@ public class Server implements Runnable {
      */
     synchronized static void broadcastMsgs(String msg, String fromThreadName) {
         String msgSent = "Username " + fromThreadName + " broadcasted: " + msg; //update threadID to username.
-        serverGUI.addToMsgs(msgSent);
+        if (serverGUI!=null)
+            serverGUI.addToMsgs(msgSent);
         System.out.println(msgSent);
         for (ConnectionThread ct : connections) { //send to every client (to every connection thread).
             ct.print("Username " + fromThreadName + " says: " + msg);
@@ -150,17 +155,25 @@ public class Server implements Runnable {
     synchronized static void sendPvtMsg(String msg, String fromThreadUsername) {
         boolean foundTargetUser = false; //indicate if we found target user.
         String msgTo = msg.substring(0, msg.indexOf(':'));
-        System.out.println("msgTo now equals: " + msgTo);
-        for (ConnectionThread ct : connections) {
-            if (ct.getName().equals(msgTo)) { //found the userName.
-                System.out.println("Found username.!!");
-                String pureMsg = msg.substring(msg.indexOf(':') + 1); //pure message is the text data in the message.
-                ct.print("From " + fromThreadUsername + ": " + pureMsg);
-                serverGUI.addToMsgs("User: " +fromThreadUsername +" sent a private message to "+ msgTo+": "+pureMsg); //just so the server knows about this.
-                foundTargetUser = true;
-                break; //end searching for userID.
+        String pureMsg = msg.substring(msg.indexOf(':') + 1); //pure message is the text data in the message.
+        System.out.println("msgTo now equals: " + msgTo); //update: delete this.
+            for (ConnectionThread ct : connections) {
+                if (ct.getName().equals(msgTo)) { //found the userName.
+                    if(fromThreadUsername.equals(msgTo)) {
+                        System.out.println("Username: " + fromThreadUsername+" sends a message to himself, haha.");
+                        ct.print("You private message youself, Liad & Timor laughs at you. by the way, you said: " + pureMsg);
+                        foundTargetUser = true;
+                    }
+                    else {
+                        System.out.println("Found username to send a private message to!");
+                        ct.print("From " + fromThreadUsername + ": " + pureMsg);
+                        if (serverGUI != null)
+                            serverGUI.addToMsgs("User: " + fromThreadUsername + " sent a private message to " + msgTo + ": " + pureMsg); //just so the server knows about this.
+                        foundTargetUser = true;
+                    }
+                    break; //end searching for userID.
+                }
             }
-        }
         if(!foundTargetUser){ //target user cannot be found, lets notify sender.
             for(ConnectionThread ct : connections){
                 if(ct.getName().equals(fromThreadUsername)){
@@ -179,13 +192,15 @@ public class Server implements Runnable {
      * @param userName String, represents the username of the client who asked to disconnect.
      */
     synchronized static void removeConnection(String userName) {
-        serverGUI.addToEvents(userName + " asked to disconnect.");
+        if (serverGUI!=null)
+            serverGUI.addToEvents(userName + " asked to disconnect.");
         if(connections != null) {
             for (ConnectionThread ct : connections) {
                 if (ct.getName().equals(userName)) {
                     broadcastServEvents(ct.getName() + " has disconnected.");
                     connections.remove(ct);
-                    serverGUI.addToEvents(userName + " has disconnected.");
+                    if (serverGUI!=null)
+                        serverGUI.addToEvents(userName + " has disconnected.");
                     break;
                 }
             }
@@ -203,12 +218,14 @@ public class Server implements Runnable {
      * @param threadID Long, representing the ID of the Thread called the function. (a ConnectionThread representing the client).
      */
     synchronized static void silentRemoveConnection(long threadID) {
-        serverGUI.addToEvents(threadID + " will disconnect silently, no broadcasting.");
+        if(serverGUI!=null)
+            serverGUI.addToEvents(threadID + " will disconnect silently, no broadcasting.");
         if(connections != null) {
             for (ConnectionThread ct : connections) {
                 if (ct.getId() == threadID) {
                     connections.remove(ct);
-                    serverGUI.addToEvents("ThreadID: " + threadID + " has disconnected silently. No broadcasting.");
+                    if (serverGUI!=null)
+                        serverGUI.addToEvents("ThreadID: " + threadID + " has disconnected silently. No broadcasting.");
                     break;
                 }
             }
@@ -220,7 +237,7 @@ public class Server implements Runnable {
      * This method will be called when "show online" (refresh) button is pressed. eventually, will return that string.
      *
      * This method might be called simultaneously from many different ConnectionThreads, and might get out of sync. thus - this method will be synchronized.
-     * @return String, contains all users.
+     * @return String, contains all users separated by comma.
      */
     synchronized static String getUsersOnline() {
         StringBuilder allUsers = new StringBuilder();
@@ -269,5 +286,5 @@ public class Server implements Runnable {
     private static ArrayList<ConnectionThread> connections = new ArrayList<>(); //all our connections with clients, saved in arraylist.
     private int port; //our port.
     private boolean keepGoing = true; //boolean to indicate keep listening for new clients, or terminate and close this thread.
-    private static ServerGUI serverGUI; //a GUI (on another thread) so this server can update some UI elements.
+    private static ServerGUI serverGUI = null; //a GUI (on another thread) so this server can update some UI elements.
 }
