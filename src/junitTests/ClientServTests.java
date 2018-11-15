@@ -118,7 +118,7 @@ class ClientServTests {
             e.printStackTrace();
         }
         try {
-            if (queue.size() > 0 && queue.take().contains("TestUserRequestOnline")) {
+            if (queue.size() > 0 && queue.take().contains("testUser")) {
                 //all ok. Success.
             }else{
                 fail("Something is wrong with requestOnline function, or handleMsg or requestUsername in Client side.");
@@ -155,14 +155,14 @@ class ClientServTests {
      */
     @Test
     void sendPvtMsg() {
-        testClient.sendMsg("!1");
+        testClient.sendMsg("!1"+testClient.getUsername()+":hello from myself");
         try {
-            Thread.sleep(1000); /** enough time for the server to handle the message and return an answer. over that -> consider as failure. */
+            Thread.sleep(1000); /** enough time for the server to handle the message and return an answer. over that ->(if queue is empty) consider as failure. */
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         try {
-            if (queue.size() > 0 && queue.take().contains("hi")) {
+            if (queue.size() > 0 && queue.take().contains("hello")) {
                 //all ok. Success.
             }else{
                 fail("Something is wrong with private message function, or handleMsg in Client side.");

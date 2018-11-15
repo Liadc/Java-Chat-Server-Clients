@@ -272,6 +272,10 @@ public class Client implements Runnable {
         }
     }
 
+    public String getUsername() {
+        return username;
+    }
+
     private String username;
     private boolean keepGoing = true;
     private ClientGUI clientGUI;

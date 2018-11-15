@@ -155,18 +155,25 @@ public class Server implements Runnable {
     synchronized static void sendPvtMsg(String msg, String fromThreadUsername) {
         boolean foundTargetUser = false; //indicate if we found target user.
         String msgTo = msg.substring(0, msg.indexOf(':'));
-        System.out.println("msgTo now equals: " + msgTo);
-        for (ConnectionThread ct : connections) {
-            if (ct.getName().equals(msgTo)) { //found the userName.
-                System.out.println("Found username.!!");
-                String pureMsg = msg.substring(msg.indexOf(':') + 1); //pure message is the text data in the message.
-                ct.print("From " + fromThreadUsername + ": " + pureMsg);
-                if (serverGUI!=null)
-                    serverGUI.addToMsgs("User: " +fromThreadUsername +" sent a private message to "+ msgTo+": "+pureMsg); //just so the server knows about this.
-                foundTargetUser = true;
-                break; //end searching for userID.
+        String pureMsg = msg.substring(msg.indexOf(':') + 1); //pure message is the text data in the message.
+        System.out.println("msgTo now equals: " + msgTo); //update: delete this.
+            for (ConnectionThread ct : connections) {
+                if (ct.getName().equals(msgTo)) { //found the userName.
+                    if(fromThreadUsername.equals(msgTo)) {
+                        System.out.println("Username: " + fromThreadUsername+" sends a message to himself, haha.");
+                        ct.print("You private message youself, Liad & Timor laughs at you. by the way, you said: " + pureMsg);
+                        foundTargetUser = true;
+                    }
+                    else {
+                        System.out.println("Found username to send a private message to!");
+                        ct.print("From " + fromThreadUsername + ": " + pureMsg);
+                        if (serverGUI != null)
+                            serverGUI.addToMsgs("User: " + fromThreadUsername + " sent a private message to " + msgTo + ": " + pureMsg); //just so the server knows about this.
+                        foundTargetUser = true;
+                    }
+                    break; //end searching for userID.
+                }
             }
-        }
         if(!foundTargetUser){ //target user cannot be found, lets notify sender.
             for(ConnectionThread ct : connections){
                 if(ct.getName().equals(fromThreadUsername)){
