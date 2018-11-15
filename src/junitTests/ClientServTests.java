@@ -49,16 +49,24 @@ class ClientServTests {
      */
     @BeforeEach
     void connectServ(){
-        /********** Connection to server with client **************/
+        /********** Connection to server with new client **************/
 
         testClient = new Client(localhost, 1337, null,"testUser"+countID++,queue);
         Thread clientThread = new Thread(testClient);
         clientThread.start();
         try {
-            Thread.sleep(100); //lets connection be made - server initiates threads, connection with client, client initiates listener thread etc.
+            Thread.sleep(2000); //lets connection be made - server initiates threads, connection with client, client initiates listener thread, updates username etc.
             if (queue.size()>0 && queue.take().contains("ERR:")) {
                 fail("Failed connection to the localhost server");
             }
+            else
+                while (!queue.isEmpty()){ //we empty queue from successful connection messages.
+                    try {
+                        queue.take();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -66,12 +74,25 @@ class ClientServTests {
     }
 
     /**
-     * After each test, just sleep for 0.5 seconds before we connect to the server with a new client. no stress-tests required for the server.
+     * After each test, just sleep for 2 seconds before we connect to the server with a new client. no stress-tests required for the server.
+     * We also empty queue if we got there some strings.
      */
     @AfterEach
     void threadSleep(){
         try{
-            Thread.sleep(5000);
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        while (!queue.isEmpty()){
+            try {
+                queue.take();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        try{
+            Thread.sleep(20);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -84,7 +105,7 @@ class ClientServTests {
     void connectingWrongServer(){ //connecting to wrong ip server.
         InetAddress serverIP = null;
         try {
-            serverIP = InetAddress.getByName("0.0.33.3"); //some wrong ip.
+            serverIP = InetAddress.getByName("255.255.255.15"); //some wrong ip.
         } catch (UnknownHostException e) {
             fail("Failed getting localhost address, this is an internal failure.");
             e.printStackTrace();
@@ -93,8 +114,8 @@ class ClientServTests {
         Thread clientThread = new Thread(testClient2);
         clientThread.start();
         try {
-            Thread.sleep(3000); //gives client thread 7 seconds to try to connect to wrong server.
-            if (queue.size()>0 && queue.take().contains("ERR: Cannot")) {
+            Thread.sleep(5000); //gives client thread 5 seconds to try to connect to wrong server.
+            if (queue.size()>0 && queue.take().contains("ERR:")) {
                 //all ok. we should get ERR because we are connecting to wrong server.
             }
             else{
@@ -162,7 +183,7 @@ class ClientServTests {
             e.printStackTrace();
         }
         try {
-            if (queue.size() > 0 && queue.take().contains("hello")) {
+            if (queue.size() > 0 && queue.take().contains("hello from myself")) {
                 //all ok. Success.
             }else{
                 fail("Something is wrong with private message function, or handleMsg in Client side.");
@@ -171,5 +192,30 @@ class ClientServTests {
             e.printStackTrace();
         }
     }
+
+    /**
+     * a Client request to private message to false username (doesn't exists or offline). the client himself should get an error indicating this.
+     */
+    @Test
+    void sendPvtMsgToOfflineUser() {
+        testClient.sendMsg("!1"+"NOsuchClientNameOnline"+":hello from tester client");//cannot be found on the server.
+        try {
+            Thread.sleep(2000); /** enough time for the server to handle the message and return an answer. over that ->(if queue is empty) consider as failure. */
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        try {
+            if (queue.size() > 0 && queue.take().contains("cannot be found")) {
+                //all ok. Success.
+            }else{
+                fail("Something is wrong with private message function, or handleMsg in Client side.");
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
 
 }
