@@ -135,7 +135,7 @@ public class Client implements Runnable {
      * Which is our PrintWriter, the OutputStream to the server.
      * @param msg String, the message to send to the server.
      */
-    void sendMsg(String msg) { // does not update GUI, because it sends to the server. the server will update all GUIs accordingly.
+    public void sendMsg(String msg) { // does not update GUI, because it sends to the server. the server will update all GUIs accordingly.
         writer.println(msg);
     }
 
