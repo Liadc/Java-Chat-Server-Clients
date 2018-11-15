@@ -63,24 +63,48 @@ class ClientTest {
     }
 
     @Test
-    void connectingWrongServer(){
-
+    void connectingWrongServer(){ //connecting to wrong ip server.
+        InetAddress serverIP = null;
+        try {
+            serverIP = InetAddress.getByName("0.0.33.3");
+        } catch (UnknownHostException e) {
+            fail("Failed getting localhost address, this is an internal failure.");
+            e.printStackTrace();
+        }
+        testClient = new Client(serverIP, 1337, null,"userToWrongServ",queue);
+        Thread clientThread = new Thread(testClient);
+        clientThread.start();
+        try {
+            Thread.sleep(7000); //gives client thread 7 seconds to try to connect to wrong server.
+            if (queue.size()>0 && queue.take().contains("ERR:")) {
+                //all ok. we should get ERR because we are connecting to wrong server.
+            }
+            else{
+                fail("Something is wrong with connection to server. succeeded connecting to wrong IP.");
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
     void run() {
+
     }
 
     @Test
     void requestOnline() {
+
     }
 
     @Test
     void sendMsg() {
+
     }
 
     @Test
     void closeConnection() {
+
     }
 
 }
