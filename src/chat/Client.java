@@ -143,7 +143,7 @@ public class Client implements Runnable {
      * This method will close the inputStream and outputStream and then the socket itself.
      * it will also update the GUI "disconnect" button to "Connect".
      */
-    public void closeConnection() {
+    void closeConnection() {
         try {
             if (writer != null) {
                 writer.close();

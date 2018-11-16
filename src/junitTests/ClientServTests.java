@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class ClientServTests {
 
     private static BlockingQueue<String> queue = new LinkedBlockingDeque<>(10); //our BlockingQueue sharing data with Client thread.
-    static int countID = 1; //usersNameCOUNTID to login with, since username must be unique. -- for each test.
+    private static int countID = 1; //usersNameCOUNTID to login with, since username must be unique. -- for each test.
     private static Client testClient;
     private static InetAddress localhost;
 

@@ -159,7 +159,7 @@ public class ClientGUI {
     /**
      * This method will return the connectButton of the GUI. the method will be called sometimes from the Client
      * class, so the client can update this button according to the connection with the server.
-     * @return
+     * @return JButton, the connect/disconnect button for client gui.
      */
     JButton getConnectBtn(){ //will be used by Client.java to update button when connection is terminated or failed.
         return this.connectButton;
