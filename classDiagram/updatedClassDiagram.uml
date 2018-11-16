@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>chat.Client</OriginalElement>
+  <nodes>
+    <node x="354.503125" y="101.0">chat.Client</node>
+    <node x="0.0" y="732.0">chat.Server</node>
+    <node x="83.50312500000001" y="189.0">chat.ConnectionThread</node>
+    <node x="434.503125" y="556.0">chat.ClientGUI</node>
+    <node x="109.8125" y="1351.0">chat.ServerGUI</node>
+    <node x="266.0625" y="0.0">java.lang.Runnable</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="chat.ClientGUI" target="chat.Client">
+      <point x="-97.5" y="-367.5" />
+      <point x="467.003125" y="531.0" />
+      <point x="407.003125" y="531.0" />
+      <point x="-157.5" y="202.5" />
+    </edge>
+    <edge source="chat.ConnectionThread" target="chat.Server">
+      <point x="50.19999999999999" y="114.5" />
+      <point x="259.203125" y="531.0" />
+      <point x="292.5" y="531.0" />
+      <point x="130.0" y="-191.5" />
+    </edge>
+    <edge source="chat.ServerGUI" target="chat.ConnectionThread">
+      <point x="102.5" y="-235.5" />
+      <point x="335.3125" y="1331.0" />
+      <point x="385.3125" y="1331.0" />
+      <point x="385.3125" y="531.0" />
+      <point x="309.403125" y="531.0" />
+      <point x="100.39999999999998" y="114.5" />
+    </edge>
+    <edge source="chat.Client" target="java.lang.Runnable">
+      <point x="105.0" y="-202.5" />
+      <point x="669.503125" y="71.0" />
+      <point x="371.9375" y="71.0" />
+      <point x="45.375" y="25.5" />
+    </edge>
+    <edge source="chat.Server" target="java.lang.Runnable">
+      <point x="-130.0" y="-191.5" />
+      <point x="32.5" y="531.0" />
+      <point x="73.00312500000001" y="531.0" />
+      <point x="73.00312500000001" y="71.0" />
+      <point x="281.1875" y="71.0" />
+      <point x="-45.375" y="25.5" />
+    </edge>
+    <edge source="chat.Server" target="chat.ServerGUI">
+      <point x="130.0" y="191.5" />
+      <point x="292.5" y="1331.0" />
+      <point x="294.3125" y="1331.0" />
+      <point x="61.5" y="-235.5" />
+    </edge>
+    <edge source="chat.ConnectionThread" target="java.lang.Runnable">
+      <point x="0.0" y="-114.5" />
+      <point x="209.003125" y="81.0" />
+      <point x="311.4375" y="81.0" />
+      <point x="-15.125" y="25.5" />
+    </edge>
+    <edge source="chat.Client" target="chat.ClientGUI">
+      <point x="157.5" y="202.5" />
+      <point x="722.003125" y="531.0" />
+      <point x="662.003125" y="531.0" />
+      <point x="97.5" y="-367.5" />
+    </edge>
+    <edge source="chat.Server" target="chat.ConnectionThread">
+      <point x="-65.0" y="-191.5" />
+      <point x="97.5" y="531.0" />
+      <point x="108.603125" y="531.0" />
+      <point x="-100.4" y="114.5" />
+    </edge>
+    <edge source="chat.ServerGUI" target="chat.Server">
+      <point x="-20.5" y="-235.5" />
+      <point x="212.3125" y="1311.0" />
+      <point x="162.5" y="1311.0" />
+      <point x="0.0" y="191.5" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="1.0" x="391.0" y="268.5" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Fields</Category>
+    <Category>Constructors</Category>
+    <Category>Methods</Category>
+    <Category>Inner Classes</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+
