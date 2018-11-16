@@ -16,7 +16,7 @@ import java.util.ArrayList;
  * The server will have the following functions: broadcastServEvents, broadcastMsgs, sendPvtMsg, removeConnection, silentRemoveConnection,
  * getUsersOnline, stopServer, run (Override run of Runnable). Since the server will always listen for new connections,
  * these functions will actually be called from a ConnectionThread thread, hence some of these functions will be Synchronized.
- * The Server will store the following: its Port, its ServerGUI (so it can update UI elements), ArrayList<ConnectionThread> connections (to manage all currently online users)
+ * The Server will store the following: its Port, its ServerGUI (so it can update UI elements), ArrayList of ConnectionThread connections (to manage all currently online users)
  * and a boolean keepGoing which indicates to terminate the thread or not.
  *
  * @author Liad Cohen, Timor Sharabi
@@ -153,7 +153,6 @@ public class Server implements Runnable {
         boolean foundTargetUser = false; //indicate if we found target user.
         String msgTo = msg.substring(0, msg.indexOf(':'));
         String pureMsg = msg.substring(msg.indexOf(':') + 1); //pure message is the text data in the message.
-        System.out.println("msgTo now equals: " + msgTo); //update: delete this.
             for (ConnectionThread ct : connections) {
                 if (ct.getName().equals(msgTo)) { //found the userName.
                     if(fromThreadUsername.equals(msgTo)) {
