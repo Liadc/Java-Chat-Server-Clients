@@ -6,9 +6,21 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 
-
+/**
+ * This class represents the GUI of the server.
+ * It will show buttons for starting/stopping the server.
+ * a TextArea for the chat area itself.
+ * and TextArea for the events occurring on the server.
+ *
+ * @author Liad Cohen, Timor Sharabi.
+ */
 public class ServerGUI {
 
+    /**
+     * Constructor for the GUI.
+     * All listeners for actions (click events on buttons, etc.) will be in this constructor.
+     * logic for valid inputs will be checked inside also.
+     */
     private ServerGUI() { //constructor.
         //actionListener for red X button to close window.
         frame.addWindowListener(new WindowAdapter() {
@@ -69,14 +81,25 @@ public class ServerGUI {
         });
     }
 
+    /**
+     * The method will append an event to the events area of the GUI.
+     * @param eventMsg String, an event message to show on the events area.
+     */
     void addToEvents(String eventMsg) { //appending new event to according text area.
         eventsArea.append(eventMsg + "\n");
     }
 
+    /**
+     * The method will append a message to the messages area of the GUI.
+     * @param chatMsg String, a message to show on the messages area.
+     */
     void addToMsgs(String chatMsg) {//appending new chat message to according text area.
         chatArea.append(chatMsg + "\n");
     }
 
+    /**
+     * This method will toggle the start/stop button of the server GUI.
+     */
     private void toggleStartStopBtn() {
         if (this.startServerButton.getText().equals("Start Server")) {
             this.startServerButton.setText("Stop Server");
@@ -85,6 +108,10 @@ public class ServerGUI {
         }
     }
 
+    /**
+     * This method will toggle the start/stop button of the server GUI from the corresponding input: True-toggle to Start, False- will toggle to Stop.
+     * @param stopped
+     */
     void toggleStartStopBtn(boolean stopped) {
         if (stopped) {
             this.startServerButton.setText("Start Server");
@@ -93,6 +120,10 @@ public class ServerGUI {
         }
     }
 
+    /**
+     * our Main function of the GUI, will initiate new JFrame then calls the constructor of the ServerGUI.
+     * @param args String[], will run without any params.
+     */
     public static void main(String[] args) {
         frame = new JFrame("Server - Amazing Ex4 Chat App"); //new frame for our GUI
         frame.setContentPane(new ServerGUI().panel1); //set the pane for the frame as our JPanel from our form.

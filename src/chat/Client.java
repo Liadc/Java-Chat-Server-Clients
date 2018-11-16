@@ -110,7 +110,6 @@ public class Client implements Runnable {
                         }
                     }
                     break;
-                    //update: maybe change some GUI buttons to non-clickable if this happens.
                 }
             }
         };
@@ -272,6 +271,10 @@ public class Client implements Runnable {
         }
     }
 
+    /**
+     * a Getter method to get the username of the client.
+     * @return String, the username of the client.
+     */
     public String getUsername() {
         return username;
     }

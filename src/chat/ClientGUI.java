@@ -52,7 +52,7 @@ public class ClientGUI {
                 /** lets check IP and PORT are valid. */
                 try{
                     ip = InetAddress.getByName(ipField.getText());
-                    port = Integer.parseInt(portField.getText()); //update: might fail, use try-catch.
+                    port = Integer.parseInt(portField.getText());
                 } catch (UnknownHostException e1) {
                     addMsg("Invalid IP provided. Unknown host.");
                     return;
@@ -74,7 +74,7 @@ public class ClientGUI {
         }else{
                 try {
                     client.closeConnection();
-                } catch (Exception e1) { //update to correct exception
+                } catch (Exception e1) {
                     System.out.println("Exception thrown!!!");
                     e1.printStackTrace();
                 }
